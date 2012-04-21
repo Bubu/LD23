@@ -3,6 +3,7 @@
 #include <iostream>
 #include <Shader.h>
 #include <math.h>
+#include <TriangleGraph.h>
 
 #include <IrrKlang/irrKlang.h>
 #pragma comment(lib, "irrKlang.lib")
@@ -40,8 +41,11 @@ float roty=0;
 float rotz=0;
 float scale=0.01;
 bool frameLimit=true;
+bool wireframe=false;
 Uint32 time_;
 Uint32 fps=60;
+
+TriangleGraph tg (0);
 
 static Uint32 getDelay()
 {
@@ -62,6 +66,7 @@ static void draw ()
 {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);
+	if(!wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	SDL_Surface *screen = SDL_GetVideoSurface();
 	const int width=screen->w;
 	const int height=screen->h;
@@ -82,7 +87,7 @@ static void draw ()
   	glRotated (roty, 0.0f, 1.0f, 0.0f);
   	glRotated (rotz, 0.0f, 0.0f, 1.0f);
   	shader_per_pixel.use();
-  	glBegin(GL_QUADS);
+  	/*glBegin(GL_QUADS);
 		// Front Face
 		glNormal3f( 0.0f,  0.0f,  1.0f);
 		glVertex3f(-1.0f, -1.0f,  1.0f);
@@ -119,6 +124,14 @@ static void draw ()
 		glVertex3f(-1.0f, -1.0f,  1.0f);
 		glVertex3f(-1.0f,  1.0f,  1.0f);
 		glVertex3f(-1.0f,  1.0f, -1.0f);
+	glEnd();*/
+	glBegin(GL_TRIANGLES);
+		for(int i=0;i<tg.size();i++)
+		{
+			glVertex3f(tg[i].a.x, tg[i].a.y, tg[i].a.z);
+			glVertex3f(tg[i].b.x, tg[i].b.y, tg[i].b.z);
+			glVertex3f(tg[i].c.x, tg[i].c.y, tg[i].c.z);
+		}
 	glEnd();
 	Shader::unuse();
   	SDL_GL_SwapBuffers();
@@ -196,6 +209,7 @@ int main (int argc, char *argv[])
 					case SDLK_KP_MINUS:minus_pressed=true; break;
 					case SDLK_m: SoundEffect->setIsPaused(false);break;	
 					case SDLK_ESCAPE: done=1;              break;
+					case SDLK_l: wireframe = ! wireframe; break;
 				
 				};
                 break;

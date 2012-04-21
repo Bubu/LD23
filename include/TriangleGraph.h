@@ -17,10 +17,15 @@ class TriangleGraph
 		  inline Triangle():n0(-1),n1(-1),n2(-1){}
 	};
 	//Triangle operator[](int i)const{return triangles[i]};
-	inline Triangle& operator[](int i){return triangles[i];}
+	inline Triangle& operator[](int i){return _triangles[i];}
+	inline int size()const{return _size;}
   private:	
-	Triangle* _triangles;
-	void  subdivide(const Triangle& t, Triangle& out1, Triangle& out2, Triangle& out3);
+	void  subdivide(const Triangle& tin, Triangle& tout1, Triangle& tout2, Triangle& tout3);
+	TriangleGraph* tesselate(TriangleGraph tg);
+
 	const int _size;
+	int _currentSize;
+	Triangle* _triangles;
+	Triangle* _currentTriangles;
 };
 #endif
