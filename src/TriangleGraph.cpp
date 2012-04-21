@@ -71,11 +71,13 @@ void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& to
 	tout0.n1 = tout1.id;
 	tout0.n2 = tout2.id;
 
+	int neighborId; 
+
 	//tout1 neighbor n0
 	tout1.n0 = tout0.id;
 
 	//tout1 neighbor n1
-	int neighborId = _triangles[tin.n1].id*4;
+	neighborId = _triangles[tin.n1].id*4;
 	if(&_triangles[_triangles[tin.n1].n0] == &tin)
 		tout1.n1 = neighborId + 2;
 	else if(&_triangles[_triangles[tin.n1].n1] == &tin)
@@ -84,7 +86,7 @@ void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& to
 		tout1.n1 = neighborId + 1;
 
 	//tout1 neighbor n2
-	int neighborId = _triangles[tin.n2].id*4;
+	neighborId = _triangles[tin.n2].id*4;
 	if(&_triangles[_triangles[tin.n2].n0] == &tin)
 		tout1.n2 = neighborId + 3;
 	else if(&_triangles[_triangles[tin.n2].n1] == &tin)
@@ -93,7 +95,7 @@ void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& to
 		tout1.n2 = neighborId + 2;
 
 	//tout2 neighbor n0
-	int neighborId = _triangles[tin.n0].id*4;
+	neighborId = _triangles[tin.n0].id*4;
 	if(&_triangles[_triangles[tin.n0].n0] == &tin)
 		tout2.n0 = neighborId + 3;
 	else if(&_triangles[_triangles[tin.n0].n1] == &tin)
@@ -105,7 +107,7 @@ void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& to
 	tout2.n0 = tout0.id;
 
 	//tout2 neighbor n2
-	int neighborId = _triangles[tin.n2].id*4;
+	neighborId = _triangles[tin.n2].id*4;
 	if(&_triangles[_triangles[tin.n2].n0] == &tin)
 		tout2.n2 = neighborId + 2;
 	else if(&_triangles[_triangles[tin.n2].n1] == &tin)
@@ -114,7 +116,7 @@ void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& to
 		tout2.n2 = neighborId + 1;
 
 	//tout3 neighbor n0
-	int neighborId = _triangles[tin.n0].id*4;
+	neighborId = _triangles[tin.n0].id*4;
 	if(&_triangles[_triangles[tin.n0].n0] == &tin)
 		tout3.n0 = neighborId + 2;
 	else if(&_triangles[_triangles[tin.n0].n1] == &tin)
@@ -123,7 +125,7 @@ void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& to
 		tout3.n0 = neighborId + 1;	
 
 	//tout3 neighbor n1
-	int neighborId = _triangles[tin.n1].id*4;
+	neighborId = _triangles[tin.n1].id*4;
 	if(&_triangles[_triangles[tin.n1].n0] == &tin)
 		tout3.n1 = neighborId + 3;
 	else if(&_triangles[_triangles[tin.n1].n1] == &tin)
