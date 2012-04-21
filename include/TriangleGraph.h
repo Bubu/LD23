@@ -22,6 +22,7 @@ class TriangleGraph
   private:	
 	void  subdivide(const Triangle& tin, Triangle& tout1, Triangle& tout2, Triangle& tout3);
 	TriangleGraph* tesselate(TriangleGraph tg);
+	void link_triangles();
 
 	const int _size;
 	int _currentSize;
