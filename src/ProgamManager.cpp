@@ -1,31 +1,32 @@
 #include <ProgamManager.h>
 #include <stdio.h>
-#include <iostream>
-DW::ProgramManager::ProgramManager():gFXEngine(0)
+//#include <iostream>
+#include <SDL/SDL.h>
+
+#include <GL/glu.h>
+#include <GFXEngine.h>
+#include <SFXEngine.h>
+#include <EventManager.h>
+ProgramManager::ProgramManager()
 {
-	
+	eventManager=new EventManager();
+	gfxEngine=new GFXEngine();
+	sfxEngine=new SFXEngine();
 }
 
-DW::ProgramManager::~ProgramManager()
+ProgramManager::~ProgramManager()
 {
 	
 }
-bool DW::ProgramManager::run()
+bool ProgramManager::run()
 {
-	//OS
-	init();
 	int state=1;
-	//Menu
-	gFXEngine->drawMenu(_menu);
+	eventManager->setTime();
+	gfxEngine->drawMenu(_menu);
 	while(state)
 	{
 		eventManager->check();
-		if (eventManager->fullScreenToggled()) 
-		{
-			printf("TFS \n");
-			gFXEngine->toggleFullscreen();		
-		}
-		
+		if (eventManager->fullScreenToggled()) gfxEngine->toggleFullscreen();	
 		int time=100;
 		switch(state)
 		{
@@ -34,107 +35,66 @@ bool DW::ProgramManager::run()
 			case 3: state=outroTick();break;
 			case 4: state=ingamePausedTick();break;
 		};
-		//gFXEngine->drawHUD(_tacBall);
-		gFXEngine->frameEnd();		
+		SDL_GL_SwapBuffers();		
 		if(eventManager->getExit()==true)state=0;
 	}
    return true;
 }
 
-int DW::ProgramManager::menuTick() 
+int ProgramManager::menuTick() 
 {
-	//eventManager->check();
-	bool down=false;
-	bool up=false;
-	bool button=false;
+	const bool down=eventManager->downPressed();
+	const bool up=eventManager->upPressed();
+	bool button=eventManager->keyTyped();
 	
-	for (int i=0;i<2;i++)
-	{
-		//0=centered; 1=up; 2=rightup; 3=right; 4=rightdown; 5=down; 6=leftfown; 7=left; 8=leftup
-		int hat=eventManager->hat(i);
-		if (hat==1||hat==2||hat==8)up=true;
-		if (hat==5||hat==4||hat==6)down=true;
-		if (eventManager->buttonPressed(i)||
-		    eventManager->startPressed(i)||
-		    eventManager->selectPressed(i))button=true;
-		//if (hat!=0)printf("hat %i\n",hat);
-	}
-	//printf("MenueTick \n");
-	if (down&&!up)_menu.setDown();
-	if (up&&!down)_menu.setUp();
+	if (down&&!up)_menu.setDownMain();
+	if (up&&!down)_menu.setUpMain();
 	if (button)
-		switch(_menu.getState())
+		switch(_menu.getStateMain())
 		{
 			case 0: return 0;
 			case 1: return 2;	
 		}
-	gFXEngine->drawMenu(_menu);
+	gfxEngine->drawMenu(_menu);
 	return 1;
 }
 
-int DW::ProgramManager::ingameTick(int time) 
+int ProgramManager::ingameTick(int time) 
 {
-	float r[2]={0.0f,0.0f};
-	float a[2]={0.0f,0.0f};
-	for (int i=0;i<2;i++)
-	{
-		
-		//int Hat;//0=centered; 1=up; 2=rightup; 3=right; 4=rightdown; 5=down; 6=leftfown; 7=left; 8=leftup
-		switch(eventManager->hat(i))
-		{
-			case 1: a[i]=+1.0f;break;
-			case 3: r[i]=-1.0f;break;
-			case 5: a[i]=-1.0f;break;
-			case 7: r[i]=+1.0f;break;	
-		}
+	gfxEngine->drawIngame(_world);
+	sfxEngine->playTestSound(eventManager->jumpPressed());
+	if (eventManager->escTyped())
+	{	
+		_menu.setFirstState(); 
+		return 4;
 	}
-	std::cout<<"[("<<a[0]<<" "<<r[0]<<") ("<<a[1]<<" "<<r[1]<<")]\n ";
-	_tacBall.tick(/*time*/100,a,r);
-	gFXEngine->drawIngame(_tacBall);
-	bool pause=false;
-	for (int i=0;i<2;i++)if(eventManager->startPressed(i))pause=true;
-	if (pause) return 4;
-	
-	bool chatwin=false;
-	for (int i=0;i<2;i++)if(eventManager->selectPressed(i))chatwin=true;
-	if (chatwin) return 3;
-	
 	return 2;
 }
-int DW::ProgramManager::ingamePausedTick() 
+int ProgramManager::ingamePausedTick() 
 {
-	gFXEngine->drawIngamePaused(_tacBall);
-	bool resume=false;
-	for (int i=0;i<2;i++)if(eventManager->startPressed(i))resume=true;
-	if (resume) return 2;
 	
-	bool end=false;
-	for (int i=0;i<2;i++)if(eventManager->selectPressed(i))end=true;
-	if (end) return 1;
+	const bool down=eventManager->downTyped();
+	const bool up=eventManager->upTyped();
+	bool button=eventManager->keyTyped();
+	
+	if (down&&!up)_menu.setDownPause();
+	if (up&&!down)_menu.setUpPause();
+	if (button)
+		switch(_menu.getStatePause())
+		{
+			case 0: return 1;
+			case 1: return 2;	
+		}
+	if (eventManager->escTyped())return 2;
+	gfxEngine->drawIngamePaused(_world,_menu);
 	return 4;
 }
-int DW::ProgramManager::outroTick() 
+int ProgramManager::outroTick() 
 {
-	gFXEngine->drawOutro();
+	//gfxEngine->drawOutro();
 	
-	bool button=false;
-	
-	for (int i=0;i<2;i++)
-		if (eventManager->buttonPressed(i)||
-		    eventManager->startPressed(i)||
-		    eventManager->selectPressed(i))button=true;
-	if (button)return 1;
-	
-	return 3;
-}
+	if(eventManager->keyTyped()|| eventManager->escTyped())return 1;
 
-bool DW::ProgramManager::init()
-{
-	settings = new Settings();
-	eventManager= new EventManager();
-	eventManager->init(settings);
-	gFXEngine= new GFXEngine();
-	gFXEngine->init(settings);
-	return true;
+	return 3;
 }
 
