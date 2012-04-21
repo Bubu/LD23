@@ -9,6 +9,8 @@ TriangleGraph::TriangleGraph(int n):_size(20 * (int)pow(4.0,n))
 	
 	int currentSize = _size;
 	_triangles = startTriangles();
+	normalize();
+	link_triangles();
 
 	for(int i = 0; i < currentSize; i++)
 	{
@@ -16,8 +18,6 @@ TriangleGraph::TriangleGraph(int n):_size(20 * (int)pow(4.0,n))
 		subdivide(_triangles[i], new_triangles[0], new_triangles[1], new_triangles[2], new_triangles[3]);
 	}
 
-	link_triangles();
-	normalize();
 	normalize();
 }
 
