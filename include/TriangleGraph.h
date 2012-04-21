@@ -14,10 +14,13 @@ class TriangleGraph
 		  Vector3f a,b,c;
 		  int n0,n1,n2;
 		  inline Triangle(const Vector3f& a, const Vector3f& b, const Vector3f& c):a(a),b(b),c(c),n0(-1),n1(-1),n2(-1){}
+		  inline Triangle():n0(-1),n1(-1),n2(-1){}
 	};
 	//Triangle operator[](int i)const{return triangles[i]};
-	inline Triangle& operator[](int i){return triangles[i]};
+	inline Triangle& operator[](int i){return triangles[i];}
   private:	
-	Triangle* triangles;
+	Triangle* _triangles;
+	void  subdivide(const Triangle& t, Triangle& out1, Triangle& out2, Triangle& out3);
+	const int _size;
 };
 #endif
