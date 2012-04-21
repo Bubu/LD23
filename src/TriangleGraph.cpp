@@ -6,43 +6,19 @@ TriangleGraph::TriangleGraph(int n):_size(20 * (int)pow(4.0,n))
 {
 	const float phi = 1 + sqrt(5.0) / 2;
 	_triangles = new Triangle[_size];
-	Triangle* startTriangles = new Triangle[30];
-
-	Vector3f vertices[] = 
-	{
-		Vector3f(0,0,-5/sqrt(50 - 10*sqrt(5.))),
-		Vector3f(0,0,5/sqrt(50 - 10*sqrt(5.))),
-		Vector3f(-sqrt(2/(5 - sqrt(5.))),0,-(1/sqrt(10 - 2*sqrt(5.)))),
-		Vector3f(sqrt(2/(5 - sqrt(5.))),0,1/sqrt(10 - 2*sqrt(5.))),
-
-		Vector3f((1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),-0.5,-(1/sqrt(10 - 2*sqrt(5.)))),
-		Vector3f((1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),0.5,-(1/sqrt(10 - 2*sqrt(5.)))),
-		Vector3f(-(1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),-0.5,1/sqrt(10 - 2*sqrt(5.))),
-		Vector3f(-(1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),0.5,1/sqrt(10 - 2*sqrt(5.))),
-
-		Vector3f(-(-1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),-sqrt((5 + sqrt(5.))/(5 - sqrt(5.)))/2.,-(1/sqrt(10 - 2*sqrt(5.)))),
-		Vector3f(-(-1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),sqrt((5 + sqrt(5.))/(5 - sqrt(5.)))/2.,-(1/sqrt(10 - 2*sqrt(5.)))),
-		Vector3f((-1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),-sqrt((5 + sqrt(5.))/(5 - sqrt(5.)))/2.,1/sqrt(10 - 2*sqrt(5.))),
-		Vector3f((-1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),sqrt((5 + sqrt(5.))/(5 - sqrt(5.)))/2.,1/sqrt(10 - 2*sqrt(5.)))
-	};
-
-	int faceIndices[20][3] = {{2, 12, 8}, {2, 8, 7}, {2, 7, 11}, {2, 11, 4}, {2, 4, 12}, {5, 9, 1},
-		{6, 5, 1}, {10, 6, 1}, {3, 10, 1}, {9, 3, 1}, {12, 10, 8}, {8, 3, 7},
-		{7, 9, 11}, {11, 5, 4}, {4, 6, 12}, {5, 11, 9}, {6, 4, 5}, {10, 12, 6}, {3, 8, 10}, {9, 7, 3}};
-	for(int i = 0; i < 20; i++) for(int ii = 0; ii < 3; ii++) faceIndices[i][ii]-=1;
-
-	for(int i = 0; i < 20; i++)
-		startTriangles[i] = Triangle(vertices[faceIndices[i][0]], vertices[faceIndices[i][1]], vertices[faceIndices[i][2]],i);
-	_triangles = startTriangles;
-	link_triangles();
-
+	
 	int currentSize = _size;
+	_triangles = startTriangles();
 
 	for(int i = 0; i < currentSize; i++)
-		{
-			Triangle* new_triangles = new Triangle[4];
-			subdivide(startTriangles[i], new_triangles[0], new_triangles[1], new_triangles[2], new_triangles[3]);
-		}
+	{
+		Triangle* new_triangles = new Triangle[4];
+		subdivide(_triangles[i], new_triangles[0], new_triangles[1], new_triangles[2], new_triangles[3]);
+	}
+
+	link_triangles();
+	normalize();
+	normalize();
 }
 
 void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& tout1, Triangle& tout2, Triangle& tout3)
@@ -189,4 +165,44 @@ void TriangleGraph::link_triangles()
 
 	}
 
+}
+
+void TriangleGraph::normalize()
+{
+	for(int i = 0; i < _size; i++)
+	{
+		_triangles[i].a.normalize();
+		_triangles[i].b.normalize();
+		_triangles[i].c.normalize();
+	}
+}
+
+TriangleGraph::Triangle* TriangleGraph::startTriangles()
+{ 
+	Triangle* startTriangles = new Triangle[30];
+	Vector3f vertices[] = 
+		{Vector3f(0,0,-5/sqrt(50 - 10*sqrt(5.))),
+		Vector3f(0,0,5/sqrt(50 - 10*sqrt(5.))),
+		Vector3f(-sqrt(2/(5 - sqrt(5.))),0,-(1/sqrt(10 - 2*sqrt(5.)))),
+		Vector3f(sqrt(2/(5 - sqrt(5.))),0,1/sqrt(10 - 2*sqrt(5.))),
+
+		Vector3f((1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),-0.5,-(1/sqrt(10 - 2*sqrt(5.)))),
+		Vector3f((1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),0.5,-(1/sqrt(10 - 2*sqrt(5.)))),
+		Vector3f(-(1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),-0.5,1/sqrt(10 - 2*sqrt(5.))),
+		Vector3f(-(1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),0.5,1/sqrt(10 - 2*sqrt(5.))),
+
+		Vector3f(-(-1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),-sqrt((5 + sqrt(5.))/(5 - sqrt(5.)))/2.,-(1/sqrt(10 - 2*sqrt(5.)))),
+		Vector3f(-(-1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),sqrt((5 + sqrt(5.))/(5 - sqrt(5.)))/2.,-(1/sqrt(10 - 2*sqrt(5.)))),
+		Vector3f((-1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),-sqrt((5 + sqrt(5.))/(5 - sqrt(5.)))/2.,1/sqrt(10 - 2*sqrt(5.))),
+		Vector3f((-1 + sqrt(5.))/(2.*sqrt(10 - 2*sqrt(5.))),sqrt((5 + sqrt(5.))/(5 - sqrt(5.)))/2.,1/sqrt(10 - 2*sqrt(5.)))
+	};
+
+	int faceIndices[20][3] = {{2, 12, 8}, {2, 8, 7}, {2, 7, 11}, {2, 11, 4}, {2, 4, 12}, {5, 9, 1},
+		{6, 5, 1}, {10, 6, 1}, {3, 10, 1}, {9, 3, 1}, {12, 10, 8}, {8, 3, 7},
+		{7, 9, 11}, {11, 5, 4}, {4, 6, 12}, {5, 11, 9}, {6, 4, 5}, {10, 12, 6}, {3, 8, 10}, {9, 7, 3}};
+	for(int i = 0; i < 20; i++) for(int ii = 0; ii < 3; ii++) faceIndices[i][ii]-=1;
+
+	for(int i = 0; i < 20; i++)
+		startTriangles[i] = Triangle(vertices[faceIndices[i][0]], vertices[faceIndices[i][1]], vertices[faceIndices[i][2]],i);
+	return startTriangles;	
 }

@@ -30,5 +30,7 @@ class TriangleGraph
 	int _currentSize;
 	Triangle* _triangles;
 	Triangle* _currentTriangles;
+	void normalize();
+	TriangleGraph::Triangle* TriangleGraph::startTriangles();
 };
 #endif

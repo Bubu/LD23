@@ -27,10 +27,10 @@ class Vector3f
    inline Vector3f operator/(const Vector3f& other) const{return Vector3f(this->x/other.x,this->y/other.y,this->z/other.z);}
    inline Vector3f& operator/=(const Vector3f& other){x/=other.x;y/=other.y;z/=other.z;return *this;}
    //Weiter Funktionen 
-   inline float Length()const {return sqrt(x*x+y*y+z*z);}
-   inline float SquareLength()const {return x*x+y*y+z*z;}
-   inline Vector3f Normalize(){float l=Length();if (l!=0){x/=l;y/=l;z/=l;};return *this;}
-   inline Vector3f Norm()const{float l=Length();if (l==0)return Vector3f();return Vector3f(x/l,y/l,z/l);} 
+   inline float length()const {return sqrt(x*x+y*y+z*z);}
+   inline float squareLength()const {return x*x+y*y+z*z;}
+   inline Vector3f normalize(){float l=length();if (l!=0){x/=l;y/=l;z/=l;};return *this;}
+   inline Vector3f norm()const{float l=length();if (l==0)return Vector3f();return Vector3f(x/l,y/l,z/l);} 
    inline bool operator==(const Vector3f& other)const{return (this->x==other.x&&this->y==other.y&&this->z==other.z);} 
    inline bool operator!=(const Vector3f& other)const{return (this->x!=other.x||this->y!=other.y||this->z!=other.z);}
    //Komponenten                
