@@ -13,11 +13,14 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\Init.cpp" />
     <ClCompile Include="..\..\src\Shader.cpp" />
+    <ClCompile Include="..\..\src\TriangleGraph.cpp" />
     <ClCompile Include="..\main_test1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Init.h" />
     <ClInclude Include="..\..\include\Shader.h" />
+    <ClInclude Include="..\..\include\TriangleGraph.h" />
+    <ClInclude Include="..\..\include\Vector3f.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D1F103EE-0640-4CB5-A518-1269F4D03398}</ProjectGuid>
