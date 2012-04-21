@@ -58,7 +58,7 @@ static Uint32 getDelay()
 		_optTime=_time;
 	}
 	time_=_optTime;
-	std::cout<<_Delay<<"\n";
+	//std::cout<<_Delay<<"\n";
 	return _Delay;
 }
 
@@ -125,12 +125,26 @@ static void draw ()
 		glVertex3f(-1.0f,  1.0f,  1.0f);
 		glVertex3f(-1.0f,  1.0f, -1.0f);
 	glEnd();*/
+	
 	glBegin(GL_TRIANGLES);
 		for(int i=0;i<tg.size();i++)
 		{
 			glVertex3f(tg[i].a.x, tg[i].a.y, tg[i].a.z);
 			glVertex3f(tg[i].b.x, tg[i].b.y, tg[i].b.z);
 			glVertex3f(tg[i].c.x, tg[i].c.y, tg[i].c.z);
+		}
+	glEnd();
+	glBegin(GL_LINES);
+	glColor3f(0,0,1);
+
+	for(int i=0;i<tg.size();i++)
+		{
+			glVertex3f(tg[i].centerPoint().x, tg[i].centerPoint().y, tg[i].centerPoint().z);
+			glVertex3f(tg[tg[i].n0].centerPoint().x, tg[tg[i].n0].centerPoint().y, tg[tg[i].n0].centerPoint().z);
+			glVertex3f(tg[i].centerPoint().x, tg[i].centerPoint().y, tg[i].centerPoint().z);
+			glVertex3f(tg[tg[i].n1].centerPoint().x, tg[tg[i].n1].centerPoint().y, tg[tg[i].n1].centerPoint().z);
+			glVertex3f(tg[i].centerPoint().x, tg[i].centerPoint().y, tg[i].centerPoint().z);
+			glVertex3f(tg[tg[i].n2].centerPoint().x, tg[tg[i].n2].centerPoint().y, tg[tg[i].n2].centerPoint().z);
 		}
 	glEnd();
 	Shader::unuse();

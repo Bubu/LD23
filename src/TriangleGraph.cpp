@@ -70,15 +70,23 @@ void TriangleGraph::link_triangles()
 		
 	for(int i = 0; i < 30; i++) 
 	{
-		Triangle t1 = _triangles[adjacentFaceIndices[i][0]];
-		Triangle t2 = _triangles[adjacentFaceIndices[i][1]];
+		Triangle &t1 = _triangles[adjacentFaceIndices[i][0]];
+		Triangle &t2 = _triangles[adjacentFaceIndices[i][1]];
 
 		int otherPoint;
+		/*
 		if(same(t1.a,t2.a,0.000001) || same(t1.a,t2.b,0.000001))
 		otherPoint = 2;
 		if(same(t1.a,t2.a,0.000001) || same(t1.a,t2.c,0.000001))
 		otherPoint = 1;
 		if(same(t1.a,t2.b,0.000001) || same(t1.a,t2.c,0.000001))
+		otherPoint = 0;*/
+
+		if(!(same(t1.a,t2.a,0.000001) || same(t1.a,t2.b,0.000001) || same(t1.a,t2.c,0.000001)))
+		otherPoint = 2;
+		if(!(same(t1.b,t2.a,0.000001) || same(t1.b,t2.b,0.000001) || same(t1.b,t2.c,0.000001)))
+		otherPoint = 1;
+		if(!(same(t1.c,t2.a,0.000001) || same(t1.c,t2.b,0.000001) || same(t1.c,t2.c,0.000001)))
 		otherPoint = 0;
 
 		switch(otherPoint)
@@ -88,11 +96,12 @@ void TriangleGraph::link_triangles()
 		case 2: t1.n1 = adjacentFaceIndices[i][1];	break;
 		}
 
-		if(same(t2.a,t1.a,0.000001) || same(t2.a,t1.b,0.000001))
+		std::cout<<"otherpoint: "<<otherPoint<<"\n";
+		if(!(same(t2.a,t1.a,0.000001) || same(t2.a,t1.b,0.000001) || same(t2.a,t1.c,0.000001)))
 		otherPoint = 2;
-		if(same(t2.a,t1.a,0.000001) || same(t2.a,t1.c,0.000001))
+		if(!(same(t2.b,t1.a,0.000001) || same(t2.b,t1.b,0.000001) || same(t2.b,t1.c,0.000001)))
 		otherPoint = 1;
-		if(same(t2.a,t1.b,0.000001) || same(t2.a,t1.c,0.000001))
+		if(!(same(t2.c,t1.a,0.000001) || same(t2.c,t1.b,0.000001) || same(t2.c,t1.c,0.000001)))
 		otherPoint = 0;
 
 		switch(otherPoint)

@@ -15,6 +15,7 @@ class TriangleGraph
 		  int n0,n1,n2;
 		  inline Triangle(const Vector3f& a, const Vector3f& b, const Vector3f& c):a(a),b(b),c(c),n0(-1),n1(-1),n2(-1){}
 		  inline Triangle():n0(-1),n1(-1),n2(-1){}
+		  inline Vector3f centerPoint()const{return (a + b + c)/3;}
 	};
 	//Triangle operator[](int i)const{return triangles[i]};
 	inline Triangle& operator[](int i){return _triangles[i];}
