@@ -1,64 +1,62 @@
-#ifndef __DW__EventManager_H_INCLUDED__
-#define __DW__EventManager_H_INCLUDED__
-#include <Settings/Settings.h>
-union SDL_Event;
+#ifndef __EventManager_H_INCLUDED__
+#define __EventManager_H_INCLUDED__
 
-namespace DW
-{
+union SDL_Event;
 
 class EventManager
 {
   public:	
 	void check();
-	void init(Settings* settings);
-	inline int hat(int deviceNumber)const;
-	inline bool buttonPressed(int deviceNumber)const;
-	inline bool startPressed(int deviceNumber)const;
-	inline bool selectPressed(int deviceNumber)const;
-	inline bool getExit()const;
-	inline bool fullScreenToggled()const;
-
-  protected:
-	class Device
-	{
-	  public:
-			int Hat;//0=centered; 1=up; 2=rightup; 3=right; 4=rightdown; 5=down; 6=leftfown; 7=left; 8=leftup
-			bool start , select;
-			bool button;
-			inline void setNull();	
-			inline void resetButtons();				
-	} devices[2];
-	bool _exit;
-	unsigned int getDelay();	
-	Settings * _settings;	
+	EventManager():	_upTyped(false),_downTyped(false),_leftTyped(false),_rightTyped(false),
+					_upPressed(false),_downPressed(false),_leftPressed(false),_rightPressed(false),
+					_escTyped(false),_actionPressed(false),_jumpPressed(false),_frameLimit(true),
+					_fullScreenToggled(false),_keyTyped(false),_exit(false),_number(0),_maxNumber(0){}
+	inline void setMaxNumber(int i){_maxNumber=i;}
+	inline int number()const {return _number;}
+	inline bool upPressed()const{return _upPressed;}
+	inline bool downPressed()const{return _downPressed;}
+	inline bool leftPressed()const{return _leftPressed;}
+	inline bool rightPressed()const{return _rightPressed;}
+	inline bool upTyped()const{return _upPressed;}
+	inline bool downTyped()const{return _downPressed;}
+	inline bool leftTyped()const{return _leftPressed;}
+	inline bool rightTyped()const{return _rightPressed;}
+	inline bool keyTyped()const{return _keyTyped;}
+	inline bool escTyped()const{return _escTyped;}
+	inline bool actionPressed()const{return _actionPressed;}
+	inline bool jumpPressed()const{return _jumpPressed;}
+	inline bool getExit()const{return _exit;}
+	inline bool fullScreenToggled()const{return _fullScreenToggled;}
+	
+	void setTime();	
+	
   private:
+	unsigned int getDelay();	
 	void evaluate(const SDL_Event& event);
 	int timeLeft();
 	int _next_time;	
 	unsigned int time_;
 	bool _frameLimit;
-	bool _fullScreenToggled;		
+	
+	bool _upPressed;
+	bool _downPressed;
+	bool _leftPressed;
+	bool _rightPressed;
+	bool _upTyped;
+	bool _downTyped;
+	bool _leftTyped;
+	bool _rightTyped;
+	bool _escTyped;
+	bool _keyTyped;
+	bool _actionPressed;
+	bool _jumpPressed;
+	bool _fullScreenToggled;	
+	
+	bool _exit;	
+	
+	int _maxNumber;
+	int _number;
 };
 
-inline int EventManager::hat(int deviceNumber)const{return devices[deviceNumber].Hat;}
-inline bool EventManager::startPressed(int deviceNumber)const{return devices[deviceNumber].start;}
-inline bool EventManager::selectPressed(int deviceNumber)const{return devices[deviceNumber].select;}
-inline bool EventManager::buttonPressed(int deviceNumber)const{return devices[deviceNumber].button;}
-inline void EventManager::Device::setNull()
-{
-	Hat=0;
-	button=false;
-	start=false;
-	select=false;
-}
-inline void EventManager::Device::resetButtons()
-{
-	button=false;
-	start=false;
-	select=false;
-}
-inline bool EventManager::getExit()const{return _exit;}
-inline bool EventManager::fullScreenToggled()const{return _fullScreenToggled;}	
-}
 
 #endif
