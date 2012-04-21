@@ -135,7 +135,7 @@ int main (int argc, char *argv[])
 	if(!shader_per_pixel.compileAndLink()  )std::cout<<("White-Shader-Error:"  +shader_per_pixel.getLog()  )<<"\n";
     //Sound
 	irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
-	irrklang::ISound* SoundEffect = SoundEngine->play2D("../Sound_Water0001.wav",true,true,false,irrklang::ESM_AUTO_DETECT, true);
+	irrklang::ISound* SoundEffect = SoundEngine->play2D("Sound_Water0001.wav",true,true,false,irrklang::ESM_AUTO_DETECT, true);
 	SoundEffect->setIsPaused(true);
 	//Sound_Water0001.wav
 	time_=SDL_GetTicks();
