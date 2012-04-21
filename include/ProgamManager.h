@@ -1,14 +1,14 @@
-#ifndef __DW__ProgramManager_H_INCLUDED__
-#define __DW__ProgramManager_H_INCLUDED__
+#ifndef __ProgramManager_H_INCLUDED__
+#define __ProgramManager_H_INCLUDED__
 
-#include <GFX/GFXEngine.h>
-#include <Event/EventManager.h>
+
+
 #include <Menu.h>
-#include <TacBall/TacBall.h>
-#include <Settings/Settings.h>
+#include <World.h>
 
-namespace DW
-{
+class GFXEngine;
+class SFXEngine;
+class EventManager;
 class ProgramManager
 {
   public:
@@ -16,20 +16,17 @@ class ProgramManager
 	~ProgramManager();
 	bool run();
 	
-  private:	
-	bool init();
-	
-	
+  private:
 	int menuTick();
 	int ingameTick(int time);
 	int ingamePausedTick();
 	int outroTick();
 	
-	Settings * settings;
-	GFXEngine* gFXEngine;
+	GFXEngine* gfxEngine;
+	SFXEngine* sfxEngine;
 	EventManager* eventManager;
 	Menu _menu;
-	TacBall _tacBall;
+	World _world;
 };	
-}
+
 #endif
