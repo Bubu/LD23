@@ -16,7 +16,7 @@ TriangleGraph::TriangleGraph(int n):_size(20 * (int)pow(4.0,n))
 	{
 		Triangle* new_triangles = new Triangle[4];
 		subdivide(startTriangles[i], new_triangles[0], new_triangles[1], new_triangles[2], new_triangles[3]);
-		for(int ii = 0; i < 4; i++)
+		for(int ii = 0; ii < 4; ii++)
 		{
 			_triangles[new_triangles[ii].id] = new_triangles[ii];
 		}

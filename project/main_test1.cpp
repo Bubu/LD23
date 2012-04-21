@@ -39,7 +39,7 @@ static Shader shader_per_pixel(
 float rotx=0;
 float roty=0;
 float rotz=0;
-float scale=0.01;
+float scale=0.5;
 bool frameLimit=true;
 bool wireframe=false;
 Uint32 time_;
@@ -66,8 +66,8 @@ static void draw ()
 {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
 	if(!wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	SDL_Surface *screen = SDL_GetVideoSurface();
 	const int width=screen->w;
