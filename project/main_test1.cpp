@@ -45,7 +45,7 @@ bool wireframe=false;
 Uint32 time_;
 Uint32 fps=60;
 
-TriangleGraph tg (0);
+TriangleGraph tg (1);
 
 static Uint32 getDelay()
 {
@@ -88,7 +88,7 @@ static void draw ()
   	glRotated (rotx, 1.0f, 0.0f, 0.0f);
   	glRotated (roty, 0.0f, 1.0f, 0.0f);
   	glRotated (rotz, 0.0f, 0.0f, 1.0f);
-  	shader_per_pixel.use();
+  	//shader_per_pixel.use();
   	/*glBegin(GL_QUADS);
 		// Front Face
 		glNormal3f( 0.0f,  0.0f,  1.0f);

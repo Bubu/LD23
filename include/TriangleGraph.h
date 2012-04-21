@@ -24,13 +24,13 @@ class TriangleGraph
   private:	
 	void  subdivide(const Triangle& tin, Triangle& tout0, Triangle& tout1, Triangle& tout2, Triangle& tout3);
 	TriangleGraph* tesselate(TriangleGraph tg);
-	void link_triangles();
+	void link_triangles(Triangle* triangles);
 
 	const int _size;
 	int _currentSize;
 	Triangle* _triangles;
 	Triangle* _currentTriangles;
-	void normalize();
-	TriangleGraph::Triangle* TriangleGraph::startTriangles();
+	void normalize(Triangle* triangles, int lenght);
+	TriangleGraph::Triangle* TriangleGraph::calculateStartTriangles();
 };
 #endif
