@@ -1,4 +1,4 @@
-#include "../include/Shader.h"
+#include <Shader.h>
 #include <fstream>
 #include <iostream>
 Shader::Shader(std::string vertex, std::string fragment):sv(vertex),sf(fragment)
