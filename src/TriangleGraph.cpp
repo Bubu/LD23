@@ -32,26 +32,108 @@ TriangleGraph::TriangleGraph(int n):_size(20 * (int)pow(4.0,n))
 	for(int i = 0; i < 20; i++) for(int ii = 0; ii < 3; ii++) faceIndices[i][ii]-=1;
 
 	for(int i = 0; i < 20; i++)
-		startTriangles[i] = Triangle(vertices[faceIndices[i][0]], vertices[faceIndices[i][1]], vertices[faceIndices[i][2]]);
+		startTriangles[i] = Triangle(vertices[faceIndices[i][0]], vertices[faceIndices[i][1]], vertices[faceIndices[i][2]],i);
 	_triangles = startTriangles;
 	link_triangles();
 
-	/*for(int i = 0; i < currentSize; i++)
+	int currentSize = _size;
+
+	for(int i = 0; i < currentSize; i++)
 		{
-			subdivide(startTriangles[i],);
-		}*/
+			Triangle* new_triangles = new Triangle[4];
+			subdivide(startTriangles[i], new_triangles[0], new_triangles[1], new_triangles[2], new_triangles[3]);
+		}
 }
 
-void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout1, Triangle& tout2, Triangle& tout3)
+void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& tout1, Triangle& tout2, Triangle& tout3)
 {
-	/*Triangle* currentTriangles = new Triangle[currentSize];
-	int currentSize = 30;
-	int newsize = currentSize<<2;
-	std::cout<<"newsize: "<<newsize<<"\n";
-	for(int i = 0; i < currentSize; i++)
-	{
-		subdivde(currentTriangles[i]);
-	}*/
+	tout0.a = (tin.a + tin.b) / 2;
+	tout0.b = (tin.b + tin.c) / 2;
+	tout0.c = (tin.c + tin.a) / 2;
+	tout0.id = tin.id*4;
+	
+	tout1.a = tout0.a;
+	tout1.b = tin.b;
+	tout1.c = tout0.b;
+	tout1.id = tout0.id+1;
+
+	tout2.a = tout0.c;
+	tout2.b = tout0.b;
+	tout2.c = tin.c;
+	tout2.id = tout0.id+2;
+
+	tout3.a = tin.a;
+	tout3.b = tout0.a;
+	tout3.c = tout0.c;
+	tout3.id = tout0.id+3;
+
+	tout0.n0 = tout3.id;
+	tout0.n1 = tout1.id;
+	tout0.n2 = tout2.id;
+
+	//tout1 neighbor n0
+	tout1.n0 = tout0.id;
+
+	//tout1 neighbor n1
+	int neighborId = _triangles[tin.n1].id*4;
+	if(&_triangles[_triangles[tin.n1].n0] == &tin)
+		tout1.n1 = neighborId + 2;
+	else if(&_triangles[_triangles[tin.n1].n1] == &tin)
+		tout1.n1 = neighborId + 3;
+	else if(&_triangles[_triangles[tin.n1].n2] == &tin)
+		tout1.n1 = neighborId + 1;
+
+	//tout1 neighbor n2
+	int neighborId = _triangles[tin.n2].id*4;
+	if(&_triangles[_triangles[tin.n2].n0] == &tin)
+		tout1.n2 = neighborId + 3;
+	else if(&_triangles[_triangles[tin.n2].n1] == &tin)
+		tout1.n2 = neighborId + 1;
+	else if(&_triangles[_triangles[tin.n2].n2] == &tin)
+		tout1.n2 = neighborId + 2;
+
+	//tout2 neighbor n0
+	int neighborId = _triangles[tin.n0].id*4;
+	if(&_triangles[_triangles[tin.n0].n0] == &tin)
+		tout2.n0 = neighborId + 3;
+	else if(&_triangles[_triangles[tin.n0].n1] == &tin)
+		tout2.n0 = neighborId + 1;
+	else if(&_triangles[_triangles[tin.n0].n2] == &tin)
+		tout2.n0 = neighborId + 2;
+
+	//tout2 neighbor n1
+	tout2.n0 = tout0.id;
+
+	//tout2 neighbor n2
+	int neighborId = _triangles[tin.n2].id*4;
+	if(&_triangles[_triangles[tin.n2].n0] == &tin)
+		tout2.n2 = neighborId + 2;
+	else if(&_triangles[_triangles[tin.n2].n1] == &tin)
+		tout2.n2 = neighborId + 3;
+	else if(&_triangles[_triangles[tin.n2].n2] == &tin)
+		tout2.n2 = neighborId + 1;
+
+	//tout3 neighbor n0
+	int neighborId = _triangles[tin.n0].id*4;
+	if(&_triangles[_triangles[tin.n0].n0] == &tin)
+		tout3.n0 = neighborId + 2;
+	else if(&_triangles[_triangles[tin.n0].n1] == &tin)
+		tout3.n0 = neighborId + 3;
+	else if(&_triangles[_triangles[tin.n0].n2] == &tin)
+		tout3.n0 = neighborId + 1;	
+
+	//tout3 neighbor n1
+	int neighborId = _triangles[tin.n1].id*4;
+	if(&_triangles[_triangles[tin.n1].n0] == &tin)
+		tout3.n1 = neighborId + 3;
+	else if(&_triangles[_triangles[tin.n1].n1] == &tin)
+		tout3.n1 = neighborId + 1;
+	else if(&_triangles[_triangles[tin.n1].n2] == &tin)
+		tout3.n1 = neighborId + 2;
+
+	//tout3 neighbor n2
+	tout3.n0 = tout0.id;
+	
 }
 
 TriangleGraph* TriangleGraph::tesselate(TriangleGraph tg)
@@ -74,14 +156,6 @@ void TriangleGraph::link_triangles()
 		Triangle &t2 = _triangles[adjacentFaceIndices[i][1]];
 
 		int otherPoint;
-		/*
-		if(same(t1.a,t2.a,0.000001) || same(t1.a,t2.b,0.000001))
-		otherPoint = 2;
-		if(same(t1.a,t2.a,0.000001) || same(t1.a,t2.c,0.000001))
-		otherPoint = 1;
-		if(same(t1.a,t2.b,0.000001) || same(t1.a,t2.c,0.000001))
-		otherPoint = 0;*/
-
 		if(!(same(t1.a,t2.a,0.000001) || same(t1.a,t2.b,0.000001) || same(t1.a,t2.c,0.000001)))
 		otherPoint = 2;
 		if(!(same(t1.b,t2.a,0.000001) || same(t1.b,t2.b,0.000001) || same(t1.b,t2.c,0.000001)))
