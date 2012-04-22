@@ -47,7 +47,7 @@ Uint32 fps=60;
 
 int counter=0;
 int lod = 0;
-TriangleGraph *tg =new TriangleGraph(1);
+TriangleGraph *tg =new TriangleGraph(lod);
 
 static Uint32 getDelay()
 {
