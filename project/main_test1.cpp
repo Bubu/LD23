@@ -4,7 +4,8 @@
 #include <Shader.h>
 #include <math.h>
 #include <TriangleGraph.h>
-
+#include <Ray3f.h>
+#include <Matrix3x3f.h>
 #include <IrrKlang/irrKlang.h>
 #pragma comment(lib, "irrKlang.lib")
 
@@ -44,7 +45,7 @@ bool frameLimit=true;
 bool wireframe=false;
 Uint32 time_;
 Uint32 fps=60;
-
+Vector3f cpos;
 int counter=0;
 int lod = 0;
 TriangleGraph *tg =new TriangleGraph(lod);
@@ -62,6 +63,54 @@ static Uint32 getDelay()
 	time_=_optTime;
 	//std::cout<<_Delay<<"\n";
 	return _Delay;
+}
+
+int pickTriangle(int x, int y)
+{
+	SDL_Surface *screen = SDL_GetVideoSurface();
+	const int _width=screen->w;
+	const int _height=screen->h;
+	const float factor=0.017453292519943295769236907684886f;
+	Matrix3x3f r1=makeRotMatrix3x3(rotx*factor, roty*factor, rotz*factor);
+	const float fovy=60.0f;
+	Vector3f e=(r1*Vector3f(0, 0, +tan(fovy*0.017453292519943295769236907684886f)/scale));
+  	Ray3f ray=createRayPerspective(Vector3f(r1.m00,r1.m10,r1.m20),Vector3f(r1.m01,r1.m11,r1.m21),Vector3f(r1.m02,r1.m12,r1.m22), e, _width, _height, (float)x, (float)y, fovy);
+	
+  	float t=100000.0f;
+	bool flag=false;
+	int id=-1;
+  	Vector3f hitpoint;
+  	//Vector3f n;
+  	TriangleGraph &triangles=(*tg);
+  	for (int i=0;i<tg->size();i++)
+  	{
+		const Vector3f a=triangles[i].a-triangles[i].b;
+		const Vector3f b=triangles[i].a-triangles[i].c;
+		const Vector3f c=ray.d;
+		const Vector3f d=triangles[i].a-ray.o;
+		
+		const Vector3f a_x_b=cross(a,b);
+		
+		const Vector3f c_x_d=cross(c,d);
+		const float detM=dot(a_x_b,c);
+		//if ((detM<0)==front)continue;
+		const float alpha=dot(c_x_d,b)/detM;
+		const float beta=-dot(c_x_d,a)/detM;
+		const float _t=dot(a_x_b,d)/detM;
+		if (0.0f <= alpha && alpha <=1.0f && 0.0f <= beta && beta <=1.0f &&
+		    0.0f <= alpha+beta && alpha+beta <=1.0f && _t<t && _t>0.0)
+		{
+		 	t=_t;
+	        flag=true;
+	        id=i;
+	        hitpoint=ray.o+ray.d*t;
+	        //n=triangles[i].an()*(1-alpha-beta)+triangles[i].bn()*alpha+triangles[i].cn()*beta;
+		}	
+		
+	}
+	if(flag)cpos=hitpoint;else cpos=Vector3f(100000000.f,10000000000.f,100000000000000.f);
+	//bool b=_programWindow->snag()->hit(t,_id,ray, hitpoint,n, true);
+	return id;
 }
 
 static void draw ()
@@ -154,7 +203,13 @@ static void draw ()
 		}
 	glEnd();
 	Shader::unuse();
-  	SDL_GL_SwapBuffers();
+	glColor3f(1,1,0);
+	glPointSize(11);
+	glBegin(GL_POINTS);
+		glVertex3f(cpos.x,cpos.y,cpos.z);
+	glEnd();
+	glPointSize(1);
+	SDL_GL_SwapBuffers();
 }
 
 
@@ -192,6 +247,19 @@ int main (int argc, char *argv[])
 			
             switch (event.type)
             {
+			case SDL_MOUSEBUTTONDOWN:
+				{
+					
+					int tr=pickTriangle(event.button.x,event.button.y);
+					if(tr>=0)counter=tr;
+				}
+			break;/**/
+			/*case SDL_MOUSEMOTION: 
+				{
+					int tr=pickTriangle(event.motion.x,event.motion.y);
+					if(tr>=0)counter=tr;
+				}
+			break;*/
             case SDL_KEYUP:
 				switch (event.key.keysym.sym) 
 				{
