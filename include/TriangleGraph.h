@@ -19,7 +19,8 @@ class TriangleGraph
 		  inline Vector3f centerPoint()const{return (a + b + c)/3;}
 	};
 	//Triangle operator[](int i)const{return triangles[i]};
-	inline Triangle& operator[](int i){return _triangles[i];}
+	//inline Triangle& operator[](int i){return _triangles[i];}
+	inline const Triangle& operator[](int i)const{return _triangles[i];}
 	/*TriangleGraph operator=(const other& TriangleGraph)
 	{
 

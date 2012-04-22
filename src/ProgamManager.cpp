@@ -7,7 +7,7 @@
 #include <GFXEngine.h>
 #include <SFXEngine.h>
 #include <EventManager.h>
-ProgramManager::ProgramManager()
+ProgramManager::ProgramManager(): _world(World()),_player(Player(_world.genie_()))
 {
 	eventManager=new EventManager();
 	gfxEngine=new GFXEngine();

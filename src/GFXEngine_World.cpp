@@ -16,10 +16,33 @@ void GFXEngine::drawIngame(const World& world)
     glViewport(0, 0, width, height);
   	glMatrixMode(GL_PROJECTION);
   	glLoadIdentity();
-  	gluPerspective(fovy,((float)width)/((float)height), 1.0f, 1000.0f);
+  	gluPerspective(fovy,((float)width)/((float)height), 1.0f, +tan(fovy*0.017453292519943295769236907684886f)/0.5);
+  	//gluPerspective(fovy,((float)width)/((float)height), 1.0f, 1000.0f);
   	glMatrixMode(GL_MODELVIEW);
   	glLoadIdentity();
+  	glTranslated (0, 0, -tan(fovy*0.017453292519943295769236907684886f)/0.5);	
 	glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
+	
+	{
+		
+		const Level& level=world.level(world.current());
+		const int n=level.size();
+		const TriangleGraph& triangleGraph=level.triangleGraph();
+		glBegin(GL_TRIANGLES);
+		for (int i=0;i<n;i++)
+		{
+			const Vector3f& color=level[i].color;
+			const Vector3f& a=triangleGraph[i].a;
+			const Vector3f& b=triangleGraph[i].b;
+			const Vector3f& c=triangleGraph[i].c;
+			glColor3f(color.x,color.y,color.z);
+			glVertex3f(a.x,a.y,a.z);	
+			glVertex3f(b.x,b.y,b.z);
+			glVertex3f(c.x,c.y,c.z);	
+		}
+		glEnd();
+	}
+		//world.level(world.current()).draw();
 }
 
 void GFXEngine::drawIngamePaused(const World& world, const Menu& menu)

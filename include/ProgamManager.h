@@ -5,7 +5,7 @@
 
 #include <Menu.h>
 #include <World.h>
-
+#include <Player.h>
 class GFXEngine;
 class SFXEngine;
 class EventManager;
@@ -27,6 +27,7 @@ class ProgramManager
 	EventManager* eventManager;
 	Menu _menu;
 	World _world;
+	Player _player;
 };	
 
 #endif
