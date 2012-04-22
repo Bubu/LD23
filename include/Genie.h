@@ -6,7 +6,12 @@ class Genie
 {
   public:
 	Genie();	
+	void draw();
+	void setRotation(const Matrix3x3f r){_rotation=r;}
+	void setTranlation(const Vector3f t){_translate=t;}
+	void setScale(float s){_scale=s;}
   private:	
+	void getPositions(Vector3f points[10]);
 	int _triangleId;
 	Matrix3x3f _rotation;
 	Vector3f _translate;
