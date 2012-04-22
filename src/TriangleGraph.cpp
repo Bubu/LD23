@@ -6,25 +6,28 @@ TriangleGraph::TriangleGraph(int n):_size(20 * (int)pow(4.0,n))
 {
 	const float phi = 1 + sqrt(5.0) / 2;
 	_triangles = new Triangle[_size];
-	
+	_triangles_new = new Triangle[_size];
 	int currentSize = 20;
 	Triangle* startTriangles = calculateStartTriangles();
-	normalize(startTriangles, 20);
+	normalize(startTriangles, currentSize);
 	link_triangles(startTriangles);
-	for(int i = 0; i < 20; i++){_triangles[i] = startTriangles[i]; }
-	for(int i = 0; i < currentSize; i++)
+	for(int i = 0; i < currentSize; i++){_triangles[i] = startTriangles[i]; }
+	
+	for(int tes = 0 ; tes <n; tes++)
 	{
-		Triangle* new_triangles = new Triangle[4];
-		subdivide(startTriangles[i], new_triangles[0], new_triangles[1], new_triangles[2], new_triangles[3]);
-		for(int ii = 0; i < 4; i++)
+		for(int i = 0; i < currentSize; i++)
 		{
-			_triangles[new_triangles[ii].id] = new_triangles[ii];
+			Triangle new_triangles [4];
+			subdivide(_triangles[i], new_triangles[0], new_triangles[1], new_triangles[2], new_triangles[3]);
+			for(int ii = 0; ii < 4; ii++)
+			{
+				_triangles_new[new_triangles[ii].id] = new_triangles[ii];
+			}
 		}
+		currentSize = currentSize * 4;
+		for(int i = 0; i < currentSize; i++){_triangles[i] = _triangles_new[i]; }
+		normalize(_triangles, currentSize);
 	}
-
-
-	//for(int i = 0; i < _size; i++){_triangles[i] = startTriangles[i]; }
-	normalize(_triangles, 20);
 }
 
 void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& tout1, Triangle& tout2, Triangle& tout3)
@@ -86,7 +89,7 @@ void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& to
 		tout2.n0 = neighborId + 2;
 
 	//tout2 neighbor n1
-	tout2.n0 = tout0.id;
+	tout2.n1 = tout0.id;
 
 	//tout2 neighbor n2
 	neighborId = _triangles[tin.n2].id*4;
@@ -116,7 +119,7 @@ void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& to
 		tout3.n1 = neighborId + 2;
 
 	//tout3 neighbor n2
-	tout3.n0 = tout0.id;
+	tout3.n2 = tout0.id;
 	
 }
 
@@ -141,11 +144,11 @@ void TriangleGraph::link_triangles(Triangle* triangles)
 
 		int otherPoint;
 		if(!(same(t1.a,t2.a,0.000001) || same(t1.a,t2.b,0.000001) || same(t1.a,t2.c,0.000001)))
-		otherPoint = 2;
+		otherPoint = 0;
 		if(!(same(t1.b,t2.a,0.000001) || same(t1.b,t2.b,0.000001) || same(t1.b,t2.c,0.000001)))
 		otherPoint = 1;
 		if(!(same(t1.c,t2.a,0.000001) || same(t1.c,t2.b,0.000001) || same(t1.c,t2.c,0.000001)))
-		otherPoint = 0;
+		otherPoint = 2;
 
 		switch(otherPoint)
 		{
@@ -156,11 +159,11 @@ void TriangleGraph::link_triangles(Triangle* triangles)
 
 		std::cout<<"otherpoint: "<<otherPoint<<"\n";
 		if(!(same(t2.a,t1.a,0.000001) || same(t2.a,t1.b,0.000001) || same(t2.a,t1.c,0.000001)))
-		otherPoint = 2;
+		otherPoint = 0;
 		if(!(same(t2.b,t1.a,0.000001) || same(t2.b,t1.b,0.000001) || same(t2.b,t1.c,0.000001)))
 		otherPoint = 1;
 		if(!(same(t2.c,t1.a,0.000001) || same(t2.c,t1.b,0.000001) || same(t2.c,t1.c,0.000001)))
-		otherPoint = 0;
+		otherPoint = 2;
 
 		switch(otherPoint)
 		{

@@ -39,13 +39,15 @@ static Shader shader_per_pixel(
 float rotx=0;
 float roty=0;
 float rotz=0;
-float scale=0.01;
+float scale=0.5;
 bool frameLimit=true;
 bool wireframe=false;
 Uint32 time_;
 Uint32 fps=60;
 
-TriangleGraph tg (1);
+int counter=0;
+int lod = 0;
+TriangleGraph *tg =new TriangleGraph(lod);
 
 static Uint32 getDelay()
 {
@@ -76,7 +78,7 @@ static void draw ()
     glViewport(0, 0, width, height);
   	glMatrixMode(GL_PROJECTION);
   	glLoadIdentity();
-  	gluPerspective(fovy,((float)width)/((float)height), 1.0f, 1000.0f);
+  	gluPerspective(fovy,((float)width)/((float)height), 1.0f, +tan(fovy*0.017453292519943295769236907684886f)/scale);
   	glMatrixMode(GL_MODELVIEW);
   	glLoadIdentity();
   	
@@ -127,26 +129,28 @@ static void draw ()
 		glVertex3f(-1.0f,  1.0f,  1.0f);
 		glVertex3f(-1.0f,  1.0f, -1.0f);
 	glEnd();*/
-	
+	TriangleGraph &T=(*tg);
 	glBegin(GL_TRIANGLES);
-		for(int i=0;i<tg.size();i++)
+		for(int i=0;i<T.size();i++)
 		{
-			glVertex3f(tg[i].a.x, tg[i].a.y, tg[i].a.z);
-			glVertex3f(tg[i].b.x, tg[i].b.y, tg[i].b.z);
-			glVertex3f(tg[i].c.x, tg[i].c.y, tg[i].c.z);
+			if (counter==i)glColor3f(1,1,0); else glColor3f(1,0,0);
+			glVertex3f(T[i].a.x, T[i].a.y, T[i].a.z);
+			glVertex3f(T[i].b.x, T[i].b.y, T[i].b.z);
+			glVertex3f(T[i].c.x, T[i].c.y, T[i].c.z);
 		}
 	glEnd();
 	glBegin(GL_LINES);
 	glColor3f(0,0,1);
 
-	for(int i=0;i<tg.size();i++)
+	for(int i=0;i<tg->size();i++)
 		{
-			glVertex3f(tg[i].centerPoint().x, tg[i].centerPoint().y, tg[i].centerPoint().z);
-			glVertex3f(tg[tg[i].n0].centerPoint().x, tg[tg[i].n0].centerPoint().y, tg[tg[i].n0].centerPoint().z);
-			glVertex3f(tg[i].centerPoint().x, tg[i].centerPoint().y, tg[i].centerPoint().z);
-			glVertex3f(tg[tg[i].n1].centerPoint().x, tg[tg[i].n1].centerPoint().y, tg[tg[i].n1].centerPoint().z);
-			glVertex3f(tg[i].centerPoint().x, tg[i].centerPoint().y, tg[i].centerPoint().z);
-			glVertex3f(tg[tg[i].n2].centerPoint().x, tg[tg[i].n2].centerPoint().y, tg[tg[i].n2].centerPoint().z);
+			
+			glVertex3f(T[i].centerPoint().x, T[i].centerPoint().y, T[i].centerPoint().z);
+			glVertex3f(T[T[i].n0].centerPoint().x, T[T[i].n0].centerPoint().y, T[T[i].n0].centerPoint().z);
+			glVertex3f(T[i].centerPoint().x, T[i].centerPoint().y, T[i].centerPoint().z);
+			glVertex3f(T[T[i].n1].centerPoint().x, T[T[i].n1].centerPoint().y, T[T[i].n1].centerPoint().z);
+			glVertex3f(T[i].centerPoint().x, T[i].centerPoint().y, T[i].centerPoint().z);
+			glVertex3f(T[T[i].n2].centerPoint().x, T[T[i].n2].centerPoint().y, T[T[i].n2].centerPoint().z);
 		}
 	glEnd();
 	Shader::unuse();
@@ -226,7 +230,9 @@ int main (int argc, char *argv[])
 					case SDLK_m: SoundEffect->setIsPaused(false);break;	
 					case SDLK_ESCAPE: done=1;              break;
 					case SDLK_l: wireframe = ! wireframe; break;
-				
+					case SDLK_TAB: counter=(counter+1)%80;std::cout<<"c:"<<counter<<"\n";break;
+					case SDLK_PAGEUP: lod++;delete tg; tg = new TriangleGraph(lod);break;
+					case SDLK_PAGEDOWN: lod--;if(lod<0)lod=0;delete tg; tg = new TriangleGraph(lod);break;
 				};
                 break;
             case SDL_QUIT:

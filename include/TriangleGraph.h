@@ -29,6 +29,7 @@ class TriangleGraph
 	const int _size;
 	int _currentSize;
 	Triangle* _triangles;
+	Triangle* _triangles_new;
 	Triangle* _currentTriangles;
 	void normalize(Triangle* triangles, int lenght);
 	TriangleGraph::Triangle* TriangleGraph::calculateStartTriangles();
