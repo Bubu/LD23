@@ -46,7 +46,7 @@ Uint32 time_;
 Uint32 fps=60;
 
 int counter=0;
-int lod = 0;
+int lod = 2;
 TriangleGraph *tg =new TriangleGraph(lod);
 
 static Uint32 getDelay()
@@ -90,7 +90,7 @@ static void draw ()
   	glRotated (rotx, 1.0f, 0.0f, 0.0f);
   	glRotated (roty, 0.0f, 1.0f, 0.0f);
   	glRotated (rotz, 0.0f, 0.0f, 1.0f);
-  	//shader_per_pixel.use();
+  	shader_per_pixel.use();
   	/*glBegin(GL_QUADS);
 		// Front Face
 		glNormal3f( 0.0f,  0.0f,  1.0f);

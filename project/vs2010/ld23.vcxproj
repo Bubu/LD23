@@ -11,16 +11,35 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\EventManager.cpp" />
+    <ClCompile Include="..\..\src\Genie.cpp" />
+    <ClCompile Include="..\..\src\GFXEngine.cpp" />
+    <ClCompile Include="..\..\src\GFXEngine_World.cpp" />
     <ClCompile Include="..\..\src\Init.cpp" />
+    <ClCompile Include="..\..\src\level.cpp" />
+    <ClCompile Include="..\..\src\ProgamManager.cpp" />
+    <ClCompile Include="..\..\src\SFXEngine.cpp" />
     <ClCompile Include="..\..\src\Shader.cpp" />
+    <ClCompile Include="..\..\src\tile.cpp" />
     <ClCompile Include="..\..\src\TriangleGraph.cpp" />
+    <ClCompile Include="..\..\src\World.cpp" />
     <ClCompile Include="..\main_test1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\EventManager.h" />
+    <ClInclude Include="..\..\include\Genie.h" />
+    <ClInclude Include="..\..\include\GFXEngine.h" />
     <ClInclude Include="..\..\include\Init.h" />
+    <ClInclude Include="..\..\include\level.h" />
+    <ClInclude Include="..\..\include\Matrix3x3f.h" />
+    <ClInclude Include="..\..\include\Menu.h" />
+    <ClInclude Include="..\..\include\ProgamManager.h" />
+    <ClInclude Include="..\..\include\SFXEngine.h" />
     <ClInclude Include="..\..\include\Shader.h" />
+    <ClInclude Include="..\..\include\tile.h" />
     <ClInclude Include="..\..\include\TriangleGraph.h" />
     <ClInclude Include="..\..\include\Vector3f.h" />
+    <ClInclude Include="..\..\include\World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D1F103EE-0640-4CB5-A518-1269F4D03398}</ProjectGuid>
