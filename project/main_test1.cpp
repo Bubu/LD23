@@ -7,6 +7,7 @@
 #include <Ray3f.h>
 #include <Matrix3x3f.h>
 #include <IrrKlang/irrKlang.h>
+#include <level.h>
 #pragma comment(lib, "irrKlang.lib")
 
 static Shader shader_per_pixel(
@@ -178,6 +179,7 @@ static void draw ()
 		glVertex3f(-1.0f,  1.0f,  1.0f);
 		glVertex3f(-1.0f,  1.0f, -1.0f);
 	glEnd();*/
+	
 	TriangleGraph &T=(*tg);
 	glBegin(GL_TRIANGLES);
 		for(int i=0;i<T.size();i++)

@@ -30,6 +30,10 @@ TriangleGraph::TriangleGraph(int n):_size(20 * (int)pow(4.0,n))
 	}
 }
 
+/*TriangleGraph::TriangleGraph TriangleGraph::operator=(const other& TriangleGraph)
+{
+
+}*/
 void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& tout1, Triangle& tout2, Triangle& tout3)
 {
 	tout0.a = (tin.a + tin.b) / 2;

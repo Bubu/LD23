@@ -20,6 +20,10 @@ class TriangleGraph
 	};
 	//Triangle operator[](int i)const{return triangles[i]};
 	inline Triangle& operator[](int i){return _triangles[i];}
+	/*TriangleGraph operator=(const other& TriangleGraph)
+	{
+
+	}*/
 	inline int size()const{return _size;}
   private:	
 	void  subdivide(const Triangle& tin, Triangle& tout0, Triangle& tout1, Triangle& tout2, Triangle& tout3);

@@ -3,8 +3,15 @@
 #include <math.h>
 #include <iostream>
 
-Level::Level(int n)
+Level::Level(int n):tg(TriangleGraph::TriangleGraph(n))
 {
 	size = n;
-	tiles = new Tile[size]();
+	tiles = new Tile[tg.size()]();
+
+	
+}
+
+void Level::draw()
+{
+
 }
