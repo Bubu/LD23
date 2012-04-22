@@ -6,6 +6,7 @@ TriangleGraph::TriangleGraph(int n):_size(20 * (int)pow(4.0,n))
 {
 	const float phi = 1 + sqrt(5.0) / 2;
 	_triangles = new Triangle[_size];
+	_triangles_new = new Triangle[_size];
 	
 	int currentSize = 20;
 	Triangle* startTriangles = calculateStartTriangles();
@@ -18,13 +19,13 @@ TriangleGraph::TriangleGraph(int n):_size(20 * (int)pow(4.0,n))
 		subdivide(startTriangles[i], new_triangles[0], new_triangles[1], new_triangles[2], new_triangles[3]);
 		for(int ii = 0; ii < 4; ii++)
 		{
-			_triangles[new_triangles[ii].id] = new_triangles[ii];
+			_triangles_new[new_triangles[ii].id] = new_triangles[ii];
 		}
 	}
 
 
-	//for(int i = 0; i < _size; i++){_triangles[i] = startTriangles[i]; }
-	normalize(_triangles, 20);
+	for(int i = 0; i < _size; i++){_triangles[i] = _triangles_new[i]; }
+	//normalize(_triangles, _size);
 }
 
 void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& tout1, Triangle& tout2, Triangle& tout3)
@@ -86,7 +87,7 @@ void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& to
 		tout2.n0 = neighborId + 2;
 
 	//tout2 neighbor n1
-	tout2.n0 = tout0.id;
+	tout2.n1 = tout0.id;
 
 	//tout2 neighbor n2
 	neighborId = _triangles[tin.n2].id*4;
@@ -116,7 +117,7 @@ void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& to
 		tout3.n1 = neighborId + 2;
 
 	//tout3 neighbor n2
-	tout3.n0 = tout0.id;
+	tout3.n2 = tout0.id;
 	
 }
 

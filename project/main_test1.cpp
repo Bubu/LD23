@@ -45,6 +45,7 @@ bool wireframe=false;
 Uint32 time_;
 Uint32 fps=60;
 
+int counter=0;
 TriangleGraph tg (1);
 
 static Uint32 getDelay()
@@ -66,8 +67,8 @@ static void draw ()
 {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	if(!wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	SDL_Surface *screen = SDL_GetVideoSurface();
 	const int width=screen->w;
@@ -76,7 +77,7 @@ static void draw ()
     glViewport(0, 0, width, height);
   	glMatrixMode(GL_PROJECTION);
   	glLoadIdentity();
-  	gluPerspective(fovy,((float)width)/((float)height), 1.0f, 1000.0f);
+  	gluPerspective(fovy,((float)width)/((float)height), 1.0f, +tan(fovy*0.017453292519943295769236907684886f)/scale);
   	glMatrixMode(GL_MODELVIEW);
   	glLoadIdentity();
   	
@@ -131,6 +132,7 @@ static void draw ()
 	glBegin(GL_TRIANGLES);
 		for(int i=0;i<tg.size();i++)
 		{
+			if (counter==i)glColor3f(1,1,0); else glColor3f(1,0,0);
 			glVertex3f(tg[i].a.x, tg[i].a.y, tg[i].a.z);
 			glVertex3f(tg[i].b.x, tg[i].b.y, tg[i].b.z);
 			glVertex3f(tg[i].c.x, tg[i].c.y, tg[i].c.z);
@@ -226,7 +228,7 @@ int main (int argc, char *argv[])
 					case SDLK_m: SoundEffect->setIsPaused(false);break;	
 					case SDLK_ESCAPE: done=1;              break;
 					case SDLK_l: wireframe = ! wireframe; break;
-				
+					case SDLK_TAB: counter=(counter+1)%80;std::cout<<"c:"<<counter<<"\n";break;
 				};
                 break;
             case SDL_QUIT:
