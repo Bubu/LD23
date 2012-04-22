@@ -25,7 +25,7 @@ TriangleGraph::TriangleGraph(int n):_size(20 * (int)pow(4.0,n))
 
 
 	for(int i = 0; i < _size; i++){_triangles[i] = _triangles_new[i]; }
-	//normalize(_triangles, _size);
+	normalize(_triangles, _size);
 }
 
 void TriangleGraph::subdivide(const Triangle& tin, Triangle& tout0, Triangle& tout1, Triangle& tout2, Triangle& tout3)
@@ -142,11 +142,11 @@ void TriangleGraph::link_triangles(Triangle* triangles)
 
 		int otherPoint;
 		if(!(same(t1.a,t2.a,0.000001) || same(t1.a,t2.b,0.000001) || same(t1.a,t2.c,0.000001)))
-		otherPoint = 2;
+		otherPoint = 0;
 		if(!(same(t1.b,t2.a,0.000001) || same(t1.b,t2.b,0.000001) || same(t1.b,t2.c,0.000001)))
 		otherPoint = 1;
 		if(!(same(t1.c,t2.a,0.000001) || same(t1.c,t2.b,0.000001) || same(t1.c,t2.c,0.000001)))
-		otherPoint = 0;
+		otherPoint = 2;
 
 		switch(otherPoint)
 		{
@@ -157,11 +157,11 @@ void TriangleGraph::link_triangles(Triangle* triangles)
 
 		std::cout<<"otherpoint: "<<otherPoint<<"\n";
 		if(!(same(t2.a,t1.a,0.000001) || same(t2.a,t1.b,0.000001) || same(t2.a,t1.c,0.000001)))
-		otherPoint = 2;
+		otherPoint = 0;
 		if(!(same(t2.b,t1.a,0.000001) || same(t2.b,t1.b,0.000001) || same(t2.b,t1.c,0.000001)))
 		otherPoint = 1;
 		if(!(same(t2.c,t1.a,0.000001) || same(t2.c,t1.b,0.000001) || same(t2.c,t1.c,0.000001)))
-		otherPoint = 0;
+		otherPoint = 2;
 
 		switch(otherPoint)
 		{
