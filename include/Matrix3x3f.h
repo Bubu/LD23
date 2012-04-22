@@ -63,5 +63,23 @@ inline Matrix3x3f makeRotMatrix3x3(float rx, float ry, float rz)
 	Matrix3x3f mz(cz,sz,0,-sz,cz,0,0,0,1); 
 	return mz*my*mx;
 }
+
+inline Matrix3x3f makeRotXMatrix3x3(float rx)
+{
+	float sx=sin(rx); 	float cx=cos(rx);	
+	return Matrix3x3f(1,0,0,0,cx,sx,0,-sx,cx);
+}
+
+inline Matrix3x3f makeRotYMatrix3x3(float ry)
+{
+	float sy=sin(ry);	float cy=cos(ry);
+	return Matrix3x3f(cy,0,-sy,0,1,0,sy,0,cy);
+}
+
+inline Matrix3x3f makeRotZMatrix3x3(float rz)
+{
+	float sz=sin(rz);	float cz=cos(rz); 
+	return Matrix3x3f(cz,sz,0,-sz,cz,0,0,0,1); 
+}
 	
 #endif
