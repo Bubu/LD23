@@ -3,7 +3,7 @@
 #include <TriangleGraph.h>
 #include <iostream>
 static const float pi=3.1415926535897932384626433832795f ;
-static const float _vElevatorMax=0.1f;
+static const float _vElevatorMax=1.0f;
 Player::Player(Genie& genie, const World& world):
 	_genie(genie),_teta(pi/2.0),_phi(pi),_roty(0.0f),_h(0.0f),_v(0.0f),_vElevator(_vElevatorMax),
 	_world(world)
@@ -94,12 +94,12 @@ void Player::_moveForward(float f)
 
 void Player::_jump(float f, float t)
 {
-	if (_h==0.0f && _vElevator==_vElevatorMax && f>0.0f)_v=0.3;
+	if (_h==0.0f && _vElevator==_vElevatorMax && f>0.0f)_v=0.03;
 	const float newv=(_vElevator<f)?_vElevator:f;
 	_vElevator-=newv;
-	_v+=newv*30.f-20*t;
-	_h+=_v*t*20.0;//-9.81f*f*f;
-	std::cout<<"_jump:("<<f<<","<<_h<<","<<_v<<")["<<_vElevator<<"]["<<newv<<"]\n";
+	_v+=newv*0.6-0.15*t;
+	_h+=_v*t*2.0;//-9.81f*f*f;
+	//std::cout<<"_jump:("<<f<<","<<_h<<","<<_v<<")["<<_vElevator<<"]["<<newv<<"]\n";
 	if (_h<0.0)
 	{
 		_h=0.0f;
