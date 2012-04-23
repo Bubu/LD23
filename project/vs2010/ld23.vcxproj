@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\Efreet.cpp" />
     <ClCompile Include="..\..\src\EventManager.cpp" />
     <ClCompile Include="..\..\src\Genie.cpp" />
     <ClCompile Include="..\..\src\GFXEngine.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="..\main_test2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\Efreet.h" />
     <ClInclude Include="..\..\include\EventManager.h" />
     <ClInclude Include="..\..\include\Genie.h" />
     <ClInclude Include="..\..\include\GFXEngine.h" />
