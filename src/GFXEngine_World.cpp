@@ -5,6 +5,7 @@
 #include <GL/glu.h>
 #include <SDL/SDL.h>
 #include <Player.h>
+#include <iostream>
 
 void GFXEngine::drawIngame(const World& world, const Player& player)
 {
@@ -78,6 +79,19 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 		}
 		glEnd();
 		drawGenie(world.genie(), player);
+		const Projectile& attack=world.attack();
+		if (attack.isAlive())
+		{
+			glColor3f(1,1,1);
+			Vector3f p=attack.pos()*1.1;
+			glPointSize(11);
+			glBegin(GL_POINTS);
+				glVertex3f(p.x,p.y,p.z);
+			glEnd();
+			glPointSize(1);
+			std::cout<<"Projectile:("<<p.x<<","<<p.y<<","<<p.z<<"\n";
+			
+		}
 	}
 		//world.level(world.current()).draw();
 }

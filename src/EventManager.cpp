@@ -25,7 +25,7 @@ void EventManager::check()
 	SDL_Event event;
 	const unsigned int now=SDL_GetTicks();
 	const unsigned int timePast=now-_lastTime;
-	std::cout<<"PimePast: "<<timePast<<"["<<now<<","<<_lastTime<<"\n";
+	//std::cout<<"PimePast: "<<timePast<<"["<<now<<","<<_lastTime<<"\n";
 	_duration=((float)(timePast))*0.01f;
 	_lastTime=SDL_GetTicks();
 	if (_frameLimit)SDL_Delay(getDelay());

@@ -4,7 +4,7 @@
 #include <iostream>
 static const float pi=3.1415926535897932384626433832795f ;
 static const float _vElevatorMax=1.0f;
-Player::Player(Genie& genie, const World& world):
+Player::Player(Genie& genie, World& world):
 	_genie(genie),_teta(pi/2.0),_phi(pi),_roty(0.0f),_h(0.0f),_v(0.0f),_vElevator(_vElevatorMax),
 	_world(world)
 {
@@ -80,10 +80,12 @@ void Player::_moveForward(float f)
 	p=RT*(Rx*(R2*x));*/
 	p=Vector3f(R.m02,R.m12,R.m22)*(cos( _roty)*f)+Vector3f(R.m00,R.m10,R.m20)*(sin( _roty)*f)+x;
 	p.normalize();
-	//p*=1.0f+_h;
 	
+	Matrix3x3f ry=makeRotYMatrix3x3(-_roty);
+	R=R*ry;
+	p=R*Vector3f(0.0f,cos(f),sin(f));
 	_phi=atan2(p.y,p.x);
-	_teta=acos(p.z);
+	_teta=acos(p.z/p.length());
 	_trinagle =-1;
 	const TriangleGraph& triangleGraph = _world.level(_world.current()).triangleGraph();
 	for (int i=0;i<triangleGraph.size();i++)
@@ -108,9 +110,22 @@ void Player::_jump(float f, float t)
 	}
 }
 
-void Player::tick(float time, float move, float jump, float roty)
+void Player::tick(float time, float move, float jump, float roty, bool shoot)
 {
 	_jump(jump,time);
 	_addRoty(roty);	
 	_moveForward(move);
+	//std::cout<<"("<<shoot<<","<<_world.attack().isAlive()<<")\n";
+	if (shoot && !_world.attack().isAlive())
+	{
+		std::cout<< "huhu!"<<std::endl;
+		Vector3f pos;
+		Matrix3x3f rot;
+		Matrix3x3f ry=makeRotYMatrix3x3(-_roty);
+		getTransformation(pos,rot);//Inverse
+		rot=rot*ry;
+		std::cout<<"A("<<shoot<<","<<_world.attack().isAlive()<<")\n";
+		_world.setAttack(0.01, 10.0f, rot ) ;
+		std::cout<<"B("<<shoot<<","<<_world.attack().isAlive()<<")\n";
+	}
 }

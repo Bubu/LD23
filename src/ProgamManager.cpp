@@ -67,6 +67,7 @@ int ProgramManager::ingameTick()
 	const bool right=eventManager->rightPressed();
 	const bool left=eventManager->leftPressed();
 	const bool jumped=eventManager->jumpPressed();
+	const bool action=eventManager->actionPressed();
 	const float t=eventManager->duration();
 	//std::cout<<"time:"<<t<<"\n";
 	float move=0.0f; if (down)move-=t*0.02f; if (up)   move+=t*0.02f;
@@ -76,7 +77,8 @@ int ProgramManager::ingameTick()
 	//if (left&&!right)_player.addRoty(-t*10);
 	//if (down&&!up)_player.moveForward(-t*5,_world.level(_world.current()).triangleGraph());
 	//if (up&&!down)_player.moveForward( t*5,_world.level(_world.current()).triangleGraph());
-	_player.tick(t,move,jump,roty);
+	_player.tick(t,move,jump,roty,action);
+	_world.tick(t);
 	//std::cout<<"t: "<<t<<" roty: "<<_player.roty()<<"\n";
 	sfxEngine->playTestSound(eventManager->jumpPressed());
 	gfxEngine->drawIngame(_world,_player);
