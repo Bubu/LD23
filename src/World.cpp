@@ -21,6 +21,7 @@ World::World():_level0(Level(3,0)),_level1(Level(3,1)),_level2(Level(3,2)),maxLe
 		_level0[mountain[i]].type = 1; 
 		_level0[mountain[i]].color = Vector3f(0.447,0.38,0.286);
 		_level0[mountain[i]].height = 1.1;
+		_level0[mountain[i]].blocking = true;
 	}
 
 	const int grass_count = 5;
