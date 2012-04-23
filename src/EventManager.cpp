@@ -3,7 +3,7 @@
 #include <SDL/SDL.h>
 #pragma comment(lib, "SDL.lib")
 #pragma comment(lib, "SDLmain.lib")
-
+#include <iostream>
 unsigned int EventManager::getDelay()
 {
 	const unsigned int fps=60;
@@ -21,10 +21,13 @@ unsigned int EventManager::getDelay()
 
 void EventManager::check()
 {
+	//_frameLimit=false;
 	SDL_Event event;
 	const unsigned int now=SDL_GetTicks();
-	const unsigned int timePast=now-time_;
-	_duration=((float)(timePast))*0.001f;
+	const unsigned int timePast=now-_lastTime;
+	std::cout<<"PimePast: "<<timePast<<"["<<now<<","<<_lastTime<<"\n";
+	_duration=((float)(timePast))*0.01f;
+	_lastTime=SDL_GetTicks();
 	if (_frameLimit)SDL_Delay(getDelay());
 	else time_=SDL_GetTicks();
 	

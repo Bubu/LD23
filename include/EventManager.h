@@ -34,8 +34,9 @@ class EventManager
 	unsigned int getDelay();	
 	void evaluate(const SDL_Event& event);
 	int timeLeft();
-	int _next_time;	
+	//int _next_time;	
 	unsigned int time_;
+	unsigned int _lastTime;
 	bool _frameLimit;
 	
 	bool _upPressed;

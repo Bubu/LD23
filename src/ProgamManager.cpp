@@ -1,6 +1,6 @@
 #include <ProgamManager.h>
 #include <stdio.h>
-#include <iostream>
+//#include <iostream>
 #include <SDL/SDL.h>
 
 #include <GL/glu.h>
@@ -61,16 +61,16 @@ int ProgramManager::menuTick()
 
 int ProgramManager::ingameTick() 
 {
-	gfxEngine->drawIngame(_world,_player);
+	
 	const bool down=eventManager->downPressed();
 	const bool up=eventManager->upPressed();
 	const bool right=eventManager->rightPressed();
 	const bool left=eventManager->leftPressed();
 	const bool jumped=eventManager->jumpPressed();
 	const float t=eventManager->duration();
-	
-	float move=0.0f; if (down)move-=t* 1.0f; if (up)move+=t*1.0f;
-	float roty=0.0f; if (left)roty-=t*3.0f; if (right)roty+=t*3.0f;
+	//std::cout<<"time:"<<t<<"\n";
+	float move=0.0f; if (down)move-=t*0.02f; if (up)   move+=t*0.02f;
+	float roty=0.0f; if (left)roty-=t*0.03f; if (right)roty+=t*0.03f;
 	float jump=0.0f; if (jumped)jump+=t;
 	//if (right&&!left)_player.addRoty( t*10);
 	//if (left&&!right)_player.addRoty(-t*10);
@@ -79,6 +79,7 @@ int ProgramManager::ingameTick()
 	_player.tick(t,move,jump,roty);
 	//std::cout<<"t: "<<t<<" roty: "<<_player.roty()<<"\n";
 	sfxEngine->playTestSound(eventManager->jumpPressed());
+	gfxEngine->drawIngame(_world,_player);
 	if (eventManager->escTyped())
 	{	
 		_menu.setFirstState(); 
