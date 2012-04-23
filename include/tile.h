@@ -7,10 +7,12 @@
 class Tile
 {
 	public:
-		std::string type;
+		int type;
+		float height;
 		Vector3f color;
 		inline Tile(std::string Type, Vector3f color):type(type),color(color){}
-		inline Tile():type("blub"),color(Vector3f(1,0,0)){}
+		inline Tile():type(0),color(Vector3f(0.5,0.5,0.5)),height(1.0),blocking(false){}
+		bool blocking;
 	private:
 
 };
