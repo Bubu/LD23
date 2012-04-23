@@ -5,7 +5,36 @@
 #include <GL/glu.h>
 #include <SDL/SDL.h>
 #include <Player.h>
-
+#include <iostream>
+static Shader shader_per_pixel
+(
+	"varying vec3 n;\n"\
+	"varying vec3 light;"\
+	"varying vec4 color;\n"\
+	"\n"\
+	"void main()\n"\
+	"{\n"\
+	"   color=gl_Color;\n"\
+	"	n=gl_NormalMatrix*gl_Normal;\n"\
+	"	gl_Position=ftransform();\n"\
+	"	light=((gl_Vertex+vec4(0.0,0.0,1.0,1.0))*gl_ModelViewProjectionMatrix).xyz;"\
+	"}"
+	,
+	"varying vec3 n;\n"\
+	"varying vec3 light;\n"\
+	"varying vec4 color;\n"\
+	"\n"\
+	"void main()\n"\
+	"{\n"\
+	"	vec3 no=normalize(n);\n"\
+	"//	if (n.z<0.0)no=-no;\n"\
+	"	vec3 H=normalize(light);\n"\
+	"	gl_FragColor=vec4(0.4,0.4,0.4,1.0)+max(dot(no,vec3(0.0,0.0,1.0)),0.0)*vec4(0.2,0.2,0.2,1.0)+pow(max(dot(no,H),0.0),2.0)*vec4(0.2,0.2,0.2,1.0);\n"\
+	"	gl_FragColor.a=1.0f;\n"\
+	"	gl_FragColor*=color;//vec4(color.r,color.g,color.b,color.a);\n"\
+	"}"
+);
+static TriangleGraph sphere(0);	
 void GFXEngine::drawIngame(const World& world, const Player& player)
 {
 	SDL_Surface *screen = SDL_GetVideoSurface();
@@ -94,6 +123,19 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 		}
 		glEnd();
 		drawGenie(world.genie(), player);
+		const Projectile& attack=world.attack();
+		if (attack.isAlive())
+		{
+			glColor3f(1,1,1);
+			Vector3f p=attack.pos()*1.1;
+			glPointSize(11);
+			glBegin(GL_POINTS);
+				glVertex3f(p.x,p.y,p.z);
+			glEnd();
+			glPointSize(1);
+			std::cout<<"Projectile:("<<p.x<<","<<p.y<<","<<p.z<<"\n";
+			
+		}
 	}
 		//world.level(world.current()).draw();
 }
@@ -145,9 +187,31 @@ void GFXEngine::drawIngamePaused(const World& world,const Player& player, const 
 	glEnable(GL_DEPTH_TEST);
 	glEnd();
 }
-
+void drawSphere(Vector3f m, float s)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glTranslatef(m.x,m.y,m.z);
+	glScalef(s,s,s);
+	glBegin(GL_TRIANGLES);
+	for (int i=0;i<sphere.size();i++)
+	{
+		glNormal3f(sphere[i].a.x,sphere[i].a.y,sphere[i].a.z);
+		glVertex3f(sphere[i].a.x,sphere[i].a.y,sphere[i].a.z);
+		glNormal3f(sphere[i].b.x,sphere[i].b.y,sphere[i].b.z);
+		glVertex3f(sphere[i].b.x,sphere[i].b.y,sphere[i].b.z);
+		glNormal3f(sphere[i].c.x,sphere[i].c.y,sphere[i].c.z);
+		glVertex3f(sphere[i].c.x,sphere[i].c.y,sphere[i].c.z);
+	}
+	glEnd();
+	glPopMatrix();
+	
+}
 void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 {
+	glFlush();
+	
+	
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 		//glTranslatef(_translate.x,_translate.y,_translate.z);
@@ -165,8 +229,8 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 		glRotatef(roty,0.0f,1.0f,0.0f);
 		glTranslatef(0.0f,h,0.0f);
 		Vector3f points[10]; genie.getPositions(points);
-		
-		glPointSize(11.0f);
+		shader_per_pixel.use();
+		/*glPointSize(11.0f);
 		glBegin(GL_POINTS);
 			for (int i=0;i<10;i++)glVertex3f(points[i].x,points[i].y,points[i].z);
 		glEnd();
@@ -181,6 +245,108 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 			glVertex3f(points[6].x,points[6].y,points[6].z); glVertex3f(points[5].x,points[5].y,points[5].z);
 			glVertex3f(points[7].x,points[7].y,points[7].z); glVertex3f(points[8].x,points[8].y,points[8].z);
 			glVertex3f(points[9].x,points[9].y,points[9].z); glVertex3f(points[8].x,points[8].y,points[8].z);		
+		glEnd();*/
+		glFlush();
+		glColor4f(0,0,1,0.1);
+		glEnable(GL_BLEND);
+		glEnable (GL_CULL_FACE);
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		glCullFace(GL_BACK);
+		const int seed=SDL_GetTicks(); 
+		srand(seed);
+		glBegin(GL_TRIANGLE_STRIP);
+		float a=0.0f;
+		for(int j=0;j<10;j++)
+		{
+			a=0.0f;
+			glColor4f(0,0.1*(float)j,1,0.2);
+			const float f=0.1+0.09*(float)j;
+			for (int i=0;i<1000;i++)
+			{
+				const float h=0.001f*(float)(i);
+				const float da=0.0001f*(float)(rand()%1000);
+				const float r=f*h*(0.3+(0.0002f*(float)(rand()%1000)));
+				const float dh=0.2-0.001*0.1*(float)(rand()%1000);
+				a+=da;
+				glVertex3f(cos(a)*r,(h+dh)*(h+dh),sin(a)*r);		
+			}
+		}
 		glEnd();
+		glFlush();	
+		glCullFace(GL_FRONT);
+		srand(seed);
+		glBegin(GL_TRIANGLE_STRIP);
+		a=0.0f;
+		for(int j=0;j<10;j++)
+		{
+			a=0.0f;
+			glColor4f(0,0.1*(float)j,1,0.2);
+			const float f=0.1+0.09*(float)j;
+			for (int i=0;i<1000;i++)
+			{
+				const float h=0.001f*(float)(i);
+				const float da=0.0001f*(float)(rand()%1000);
+				const float r=f*h*(0.3+(0.0002f*(float)(rand()%1000)));
+				const float dh=0.2-0.001*0.1*(float)(rand()%1000);
+				a+=da;
+				glVertex3f(cos(a)*r,(h+dh)*(h+dh),sin(a)*r);		
+			}
+		}
+		glEnd();
+		/**/
+		/*for (int i=0;i<10000;i++)
+		{
+			const float h=0.0001f*(float)(i);
+			const float da=0.0001f*(float)(rand()%1000);
+			const float r=h*(0.3+(0.0002f*(float)(rand()%1000)));
+			const float dh=0.1-0.001*0.05*(float)(rand()%1000);
+			a+=da;
+			glVertex3f(cos(a)*r,(h+dh)*(h+dh),sin(a)*r);		
+		}*/
+		glDisable(GL_BLEND);
+		glDisable(GL_CULL_FACE);
+		const float pi=3.1415926535897932384626433832795f;
+		const float da=(2*pi)/10.0f;
+		glBegin(GL_QUADS);
+		for (int i=0;i<10;i++)
+		{
+			const float y1=0.1*(float)(i);
+			const float y2=0.1*(float)(i+1);
+			const float x1=sqrt(sqrt(1.0f-y1))*0.3f;
+			const float x2=sqrt(sqrt(1.0f-y2))*0.3f;
+			//std::cout<<"x1:"<<x1<<"\n";
+			const float y=points[1].y+0.2f;
+			const float f=(points[1].y-points[0].y)*0.8;
+			for (float a=0;a<pi*2.0;a+=da)
+			{
+				const float s1=sin(x1); const float c1=cos(x1); 
+				const float s2=sin(x2); const float c2=cos(x2);
+				glNormal3f(sin(a   ),0,cos(a   ));
+				glVertex3f(x1*sin(a   ),y1*f+y,x1*cos(a   ));
+				glVertex3f(x2*sin(a   ),y2*f+y,x2*cos(a   ));
+				glNormal3f(sin(a+da),0,cos(a+da));
+				glVertex3f(x2*sin(a+da),y2*f+y,x2*cos(a+da));
+				glVertex3f(x1*sin(a+da),y1*f+y,x1*cos(a+da));
+			}
+		}
+		glEnd();
+		drawSphere(points[3], 0.15);
+		drawSphere(points[7], 0.15);
+		drawSphere(points[4], 0.15);
+		drawSphere(points[9], 0.10);
+		drawSphere(points[8], 0.05);
+		drawSphere(points[5], 0.05);
+		drawSphere(points[6], 0.10);
+		Shader::unuse();
+		glBegin(GL_LINES);
+			glVertex3f(points[7].x,points[7].y,points[7].z); glVertex3f(points[8].x,points[8].y,points[8].z);
+			glVertex3f(points[9].x,points[9].y,points[9].z); glVertex3f(points[8].x,points[8].y,points[8].z);
+			glVertex3f(points[4].x,points[4].y,points[4].z); glVertex3f(points[5].x,points[5].y,points[5].z);
+			glVertex3f(points[6].x,points[6].y,points[6].z); glVertex3f(points[5].x,points[5].y,points[5].z);
+		glEnd();
+		
+		glCullFace(GL_BACK);
+		glDisable(GL_BLEND);
+		glDisable(GL_CULL_FACE);
 	glPopMatrix();
 }
