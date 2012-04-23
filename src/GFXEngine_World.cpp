@@ -162,6 +162,7 @@ void GFXEngine::drawIngamePaused(const World& world,const Player& player, const 
 
 void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 {
+	glFlush();
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 		//glTranslatef(_translate.x,_translate.y,_translate.z);

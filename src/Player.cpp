@@ -84,13 +84,19 @@ void Player::_moveForward(float f)
 	Matrix3x3f ry=makeRotYMatrix3x3(-_roty);
 	R=R*ry;
 	p=R*Vector3f(0.0f,cos(f),sin(f));
-	_phi=atan2(p.y,p.x);
-	_teta=acos(p.z/p.length());
+	
 	_trinagle =-1;
 	const TriangleGraph& triangleGraph = _world.level(_world.current()).triangleGraph();
 	for (int i=0;i<triangleGraph.size();i++)
 	{
 		if (triangleGraph[i].isInside(p))_trinagle=i;
+	}
+	
+	
+	if (_trinagle>0 &&  !_world.currentLevel()[_trinagle].blocking)
+	{
+		_phi=atan2(p.y,p.x);
+		_teta=acos(p.z/p.length());
 	}
 }
 

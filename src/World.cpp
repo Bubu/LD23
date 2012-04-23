@@ -43,7 +43,7 @@ void World::tick(float time)
 {
 	
 	_attack.tick(time);
-	_attack.print()	;
+	//_attack.print()	;
 }
 /*const World::Level& _level(int i)
 {

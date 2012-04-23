@@ -12,6 +12,7 @@ class World
 	inline int current()const{return _currentLevel;};
 	const int maxLevel;	
 	inline const Level& level(int i)const;
+	inline const Level& currentLevel()const{return level(_currentLevel);}
 	inline const Genie& genie()const {return _genie;} 
 	inline const Projectile& attack()const {return _attack;}
 	inline void setAttack(float revolutionsPerSecond, float lifeTime, const Matrix3x3f& r )
