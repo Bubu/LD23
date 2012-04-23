@@ -6,7 +6,7 @@
 
 unsigned int EventManager::getDelay()
 {
-	const unsigned int fps=30;
+	const unsigned int fps=60;
 	unsigned int  _time=SDL_GetTicks();
 	unsigned int  _optTime=time_+1000/fps;
 	int _Delay=_optTime-_time;
@@ -22,7 +22,9 @@ unsigned int EventManager::getDelay()
 void EventManager::check()
 {
 	SDL_Event event;
-	
+	const unsigned int now=SDL_GetTicks();
+	const unsigned int timePast=now-time_;
+	_duration=((float)(timePast))*0.001f;
 	if (_frameLimit)SDL_Delay(getDelay());
 	else time_=SDL_GetTicks();
 	

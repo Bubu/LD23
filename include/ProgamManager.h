@@ -18,7 +18,7 @@ class ProgramManager
 	
   private:
 	int menuTick();
-	int ingameTick(int time);
+	int ingameTick();
 	int ingamePausedTick();
 	int outroTick();
 	

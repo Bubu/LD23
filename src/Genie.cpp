@@ -19,7 +19,7 @@ Genie::Genie()
 	_neckAngle=5.0f;
 }
 
-void Genie::getPositions(Vector3f points[10])
+void Genie::getPositions(Vector3f points[10])const
 {
 	const float k=0.0174532925199432957692369076848860f; 
 	points[0]=Vector3f();

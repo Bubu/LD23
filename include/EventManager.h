@@ -27,7 +27,7 @@ class EventManager
 	inline bool jumpPressed()const{return _jumpPressed;}
 	inline bool getExit()const{return _exit;}
 	inline bool fullScreenToggled()const{return _fullScreenToggled;}
-	
+	inline float duration()const{return _duration;}
 	void setTime();	
 	
   private:
@@ -51,7 +51,7 @@ class EventManager
 	bool _actionPressed;
 	bool _jumpPressed;
 	bool _fullScreenToggled;	
-	
+	float _duration;
 	bool _exit;	
 	
 	int _maxNumber;

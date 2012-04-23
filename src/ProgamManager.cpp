@@ -1,6 +1,6 @@
 #include <ProgamManager.h>
 #include <stdio.h>
-//#include <iostream>
+#include <iostream>
 #include <SDL/SDL.h>
 
 #include <GL/glu.h>
@@ -31,7 +31,7 @@ bool ProgramManager::run()
 		switch(state)
 		{
 			case 1: state=menuTick();break;
-			case 2: state=ingameTick(time);break;
+			case 2: state=ingameTick();break;
 			case 3: state=outroTick();break;
 			case 4: state=ingamePausedTick();break;
 		};
@@ -59,9 +59,16 @@ int ProgramManager::menuTick()
 	return 1;
 }
 
-int ProgramManager::ingameTick(int time) 
+int ProgramManager::ingameTick() 
 {
-	gfxEngine->drawIngame(_world);
+	gfxEngine->drawIngame(_world,_player);
+	const bool right=eventManager->rightPressed();
+	const bool left=eventManager->leftPressed();
+	const float t=eventManager->duration();
+	
+	if (right&&!left)_player.addRoty( t);
+	if (left&&!right)_player.addRoty(-t);
+	std::cout<<"t: "<<t<<" roty: "<<_player.roty()<<"\n";
 	sfxEngine->playTestSound(eventManager->jumpPressed());
 	if (eventManager->escTyped())
 	{	
@@ -86,7 +93,7 @@ int ProgramManager::ingamePausedTick()
 			case 1: return 2;	
 		}
 	if (eventManager->escTyped())return 2;
-	gfxEngine->drawIngamePaused(_world,_menu);
+	gfxEngine->drawIngamePaused(_world,_player,_menu);
 	return 4;
 }
 int ProgramManager::outroTick() 
