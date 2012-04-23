@@ -6,6 +6,7 @@
 #include <SDL/SDL.h>
 #include <Player.h>
 #include <iostream>
+#include <Efreet.h>
 static Shader shader_per_pixel
 (
 	"varying vec3 n;\n"\
@@ -35,6 +36,7 @@ static Shader shader_per_pixel
 	"}"
 );
 static TriangleGraph sphere(0);	
+static Efreet sefreet;
 void GFXEngine::drawIngame(const World& world, const Player& player)
 {
 	SDL_Surface *screen = SDL_GetVideoSurface();
@@ -92,9 +94,10 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 		const Level& level=world.level(world.current());
 		const int n=level.size();
 		const TriangleGraph& triangleGraph=level.triangleGraph();
-		glBegin(GL_TRIANGLES);
+		
 		for (int i=0;i<n;i++)
 		{
+			const int type=level[i].type;
 			const Vector3f& color=level[i].color;
 			const float height_factor = level[i].height;
 			const Vector3f& a=triangleGraph[i].a;
@@ -102,6 +105,8 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 			const Vector3f& c=triangleGraph[i].c;
 			glColor3f(color.x,color.y,color.z);
 			if (player.trinagle()==i)glColor3f(1,1,1);
+			
+			glBegin(GL_TRIANGLES);
 			//if(active)glColor3f(1,1,0);
 			Vector3f a_new = a * height_factor;
 			Vector3f b_new = b * height_factor;
@@ -119,9 +124,15 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 			glVertex3f(0,0,0);
 			glVertex3f(b_new.x,b_new.y,b_new.z);
 			glVertex3f(c_new.x,c_new.y,c_new.z);
-			glVertex3f(0,0,0);			
+			glVertex3f(0,0,0);		
+			glEnd();	
+			if (type==10)
+			{
+				drawEfreet(sefreet, player,triangleGraph[i].centerPoint());
+			}	
 		}
-		glEnd();
+	
+		
 		drawGenie(world.genie(), player);
 		const Projectile& attack=world.attack();
 		if (attack.isAlive())
@@ -207,6 +218,162 @@ void drawSphere(Vector3f m, float s)
 	glPopMatrix();
 	
 }
+
+void GFXEngine::drawEfreet(const Efreet& efreet, const Player& player, const Vector3f& p)
+{
+	glFlush();
+	
+	float _phi=atan2(p.y,p.x);
+	float _teta=acos(p.z/p.length());
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+		//glTranslatef(_translate.x,_translate.y,_translate.z);
+		const float f=57.295779513082320876798154814105f;
+		const float roty=f*player.roty();
+		glColor3f(1,0,0);
+		const float s=0.05;
+		float m[16];
+		//player.getTransformation(m);
+		{
+			const float su=sin(_teta); const float cu=cos(_teta);
+  			const float sv=sin(_phi); const float cv=cos(_phi);
+  			m[ 0]=cu*cv; m[ 4]=su*cv; m[ 8]=-sv ; m[12]=su*cv;
+  			m[ 1]=cu*sv; m[ 5]=su*sv; m[ 9]= cv ; m[13]=su*sv;
+  			m[ 2]=-su  ; m[ 6]= cu  ; m[10]=0.0f; m[14]= cu  ;
+  			m[ 3]= 0.0f; m[ 7]= 0.0f; m[11]=0.0f; m[15]= 1.0f;	
+		}
+		
+		float h=player.h();
+		m[0]*=s;m[1]*=s;m[2]*=s; 
+		m[4]*=s;m[5]*=s;m[6]*=s;
+		m[8]*=s;m[9]*=s;m[10]*=s;
+		glMultMatrixf(m);
+		glRotatef(roty,0.0f,1.0f,0.0f);
+		glTranslatef(0.0f,h,0.0f);
+		Vector3f points[10]; efreet.getPositions(points);
+		shader_per_pixel.use();
+		/*glPointSize(11.0f);
+		glBegin(GL_POINTS);
+			for (int i=0;i<10;i++)glVertex3f(points[i].x,points[i].y,points[i].z);
+		glEnd();
+		glPointSize(1.0f);
+		glBegin(GL_LINES);
+			glVertex3f(points[0].x,points[0].y,points[0].z); glVertex3f(points[1].x,points[1].y,points[1].z);
+			glVertex3f(points[2].x,points[2].y,points[2].z); glVertex3f(points[1].x,points[1].y,points[1].z);
+			glVertex3f(points[2].x,points[2].y,points[2].z); glVertex3f(points[3].x,points[3].y,points[3].z);
+			glVertex3f(points[2].x,points[2].y,points[2].z); glVertex3f(points[4].x,points[4].y,points[4].z);
+			glVertex3f(points[2].x,points[2].y,points[2].z); glVertex3f(points[7].x,points[7].y,points[7].z);
+			glVertex3f(points[4].x,points[4].y,points[4].z); glVertex3f(points[5].x,points[5].y,points[5].z);
+			glVertex3f(points[6].x,points[6].y,points[6].z); glVertex3f(points[5].x,points[5].y,points[5].z);
+			glVertex3f(points[7].x,points[7].y,points[7].z); glVertex3f(points[8].x,points[8].y,points[8].z);
+			glVertex3f(points[9].x,points[9].y,points[9].z); glVertex3f(points[8].x,points[8].y,points[8].z);		
+		glEnd();*/
+		glFlush();
+		glColor4f(1,0,0,0.1);
+		glEnable(GL_BLEND);
+		glEnable (GL_CULL_FACE);
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		glCullFace(GL_BACK);
+		const int seed=SDL_GetTicks(); 
+		srand(seed);
+		glBegin(GL_TRIANGLE_STRIP);
+		float a=0.0f;
+		for(int j=0;j<10;j++)
+		{
+			a=0.0f;
+			glColor4f(1,0.1*(float)j,0,0.2);
+			const float f=0.1+0.09*(float)j;
+			for (int i=0;i<1000;i++)
+			{
+				const float h=0.001f*(float)(i);
+				const float da=0.0001f*(float)(rand()%1000);
+				const float r=f*h*(0.3+(0.0002f*(float)(rand()%1000)));
+				const float dh=0.2-0.001*0.1*(float)(rand()%1000);
+				a+=da;
+				glVertex3f(cos(a)*r,(h+dh)*(h+dh),sin(a)*r);		
+			}
+		}
+		glEnd();
+		glFlush();	
+		glCullFace(GL_FRONT);
+		srand(seed);
+		glBegin(GL_TRIANGLE_STRIP);
+		a=0.0f;
+		for(int j=0;j<10;j++)
+		{
+			a=0.0f;
+			glColor4f(1,0.1*(float)j,0,0.2);
+			const float f=0.1+0.09*(float)j;
+			for (int i=0;i<1000;i++)
+			{
+				const float h=0.001f*(float)(i);
+				const float da=0.0001f*(float)(rand()%1000);
+				const float r=f*h*(0.3+(0.0002f*(float)(rand()%1000)));
+				const float dh=0.2-0.001*0.1*(float)(rand()%1000);
+				a+=da;
+				glVertex3f(cos(a)*r,(h+dh)*(h+dh),sin(a)*r);		
+			}
+		}
+		glEnd();
+		/**/
+		/*for (int i=0;i<10000;i++)
+		{
+			const float h=0.0001f*(float)(i);
+			const float da=0.0001f*(float)(rand()%1000);
+			const float r=h*(0.3+(0.0002f*(float)(rand()%1000)));
+			const float dh=0.1-0.001*0.05*(float)(rand()%1000);
+			a+=da;
+			glVertex3f(cos(a)*r,(h+dh)*(h+dh),sin(a)*r);		
+		}*/
+		glDisable(GL_BLEND);
+		glDisable(GL_CULL_FACE);
+		glColor3f(1,0,0);
+		const float pi=3.1415926535897932384626433832795f;
+		const float da=(2*pi)/10.0f;
+		glBegin(GL_QUADS);
+		for (int i=0;i<10;i++)
+		{
+			const float y1=0.1*(float)(i);
+			const float y2=0.1*(float)(i+1);
+			const float x1=sqrt(sqrt(1.0f-y1))*0.3f;
+			const float x2=sqrt(sqrt(1.0f-y2))*0.3f;
+			//std::cout<<"x1:"<<x1<<"\n";
+			const float y=points[1].y+0.2f;
+			const float f=(points[1].y-points[0].y)*0.8;
+			for (float a=0;a<pi*2.0;a+=da)
+			{
+				const float s1=sin(x1); const float c1=cos(x1); 
+				const float s2=sin(x2); const float c2=cos(x2);
+				glNormal3f(sin(a   ),0,cos(a   ));
+				glVertex3f(x1*sin(a   ),y1*f+y,x1*cos(a   ));
+				glVertex3f(x2*sin(a   ),y2*f+y,x2*cos(a   ));
+				glNormal3f(sin(a+da),0,cos(a+da));
+				glVertex3f(x2*sin(a+da),y2*f+y,x2*cos(a+da));
+				glVertex3f(x1*sin(a+da),y1*f+y,x1*cos(a+da));
+			}
+		}
+		glEnd();
+		drawSphere(points[3], 0.15);
+		drawSphere(points[7], 0.15);
+		drawSphere(points[4], 0.15);
+		drawSphere(points[9], 0.10);
+		drawSphere(points[8], 0.05);
+		drawSphere(points[5], 0.05);
+		drawSphere(points[6], 0.10);
+		Shader::unuse();
+		glBegin(GL_LINES);
+			glVertex3f(points[7].x,points[7].y,points[7].z); glVertex3f(points[8].x,points[8].y,points[8].z);
+			glVertex3f(points[9].x,points[9].y,points[9].z); glVertex3f(points[8].x,points[8].y,points[8].z);
+			glVertex3f(points[4].x,points[4].y,points[4].z); glVertex3f(points[5].x,points[5].y,points[5].z);
+			glVertex3f(points[6].x,points[6].y,points[6].z); glVertex3f(points[5].x,points[5].y,points[5].z);
+		glEnd();
+		
+		glCullFace(GL_BACK);
+		glDisable(GL_BLEND);
+		glDisable(GL_CULL_FACE);
+	glPopMatrix();
+}
+
 void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 {
 	glFlush();

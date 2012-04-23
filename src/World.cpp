@@ -66,6 +66,13 @@ void World::tick(float time)
 		_currentLevel=(_currentLevel+1)%maxLevel;
 		_player->setTriangle(currentLevel().startTile());
 	}
+	
+	if (tri>= 0 && currentLevel()[tri].type==10)
+	{
+		_currentLevel=0;
+		_player->setTriangle(currentLevel().startTile());
+	}
+	
 	//_attack.print()	;
 }
 /*const World::Level& _level(int i)
