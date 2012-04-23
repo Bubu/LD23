@@ -39,9 +39,10 @@ class GFXEngine
 	float roty;
 	float rotz;
 	float scale;
-	int counter;
+	int counter, countercounter;
 	Vector3f cpos;
 	std::ofstream file;
+	void writecountercounter();
   protected:
 	//int nextpoweroftwo(int x);
 	//std::string	convertInt(int number);

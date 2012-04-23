@@ -54,6 +54,7 @@ void GFXEngine::drawIngame(const World& world, EventManager evt)
 			{
 				file<<tr<<",";
 				std::cout<<tr<<"\n";
+				countercounter++;
 				level[tr].color = Vector3f(0.7,0.7,0.7);
 				level[tr].type = 1;
 				level[tr].height = 1.1;
@@ -201,4 +202,8 @@ int GFXEngine::pickTriangle(int x, int y, const TriangleGraph& tg)
 	if(flag)cpos=hitpoint;else cpos=Vector3f(100000000.f,10000000000.f,100000000000000.f);
 	//bool b=_programWindow->snag()->hit(t,_id,ray, hitpoint,n, true);
 	return id;
+}
+void GFXEngine::writecountercounter()
+{
+	file<<"\n"<<countercounter;
 }

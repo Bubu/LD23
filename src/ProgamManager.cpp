@@ -17,6 +17,7 @@ ProgramManager::ProgramManager(): _world(World()),_player(Player(_world.genie_()
 	gfxEngine->rotz=0;
 	gfxEngine->scale=0.9;
 	gfxEngine->counter=-1;
+	gfxEngine->countercounter=0;
 
 }
 
@@ -42,7 +43,11 @@ bool ProgramManager::run()
 			case 4: state=ingamePausedTick();break;
 		};
 		SDL_GL_SwapBuffers();		
-		if(eventManager->getExit()==true)state=0;
+		if(eventManager->getExit()==true || state ==0)
+		{
+			gfxEngine->writecountercounter();
+			state=0;
+		}
 	}
    return true;
 }
