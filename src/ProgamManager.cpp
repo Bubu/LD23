@@ -15,7 +15,7 @@ ProgramManager::ProgramManager(): _world(World()),_player(Player(_world.genie_()
 	gfxEngine->rotx=0;
 	gfxEngine->roty=0;
 	gfxEngine->rotz=0;
-	gfxEngine->scale=0.7;
+	gfxEngine->scale=0.9;
 	gfxEngine->counter=-1;
 
 }

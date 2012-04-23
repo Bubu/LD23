@@ -11,7 +11,7 @@ class Tile
 		float height;
 		Vector3f color;
 		inline Tile(std::string Type, Vector3f color):type(type),color(color){}
-		inline Tile():type(0),color(Vector3f(0.5,0.5,0.5)){}
+		inline Tile():type(0),color(Vector3f(0.5,0.5,0.5)),height(1.0){}
 	private:
 
 };

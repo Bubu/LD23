@@ -24,7 +24,7 @@ void GFXEngine::drawIngame(const World& world, EventManager evt)
     glViewport(0, 0, width, height);
   	glMatrixMode(GL_PROJECTION);
   	glLoadIdentity();
-  	gluPerspective(fovy,((float)width)/((float)height), 1.0f, +10*tan(fovy*0.017453292519943295769236907684886f)/0.5);
+  	gluPerspective(fovy,((float)width)/((float)height), 0.5f, +10*tan(fovy*0.017453292519943295769236907684886f)/0.5);
   	//gluPerspective(fovy,((float)width)/((float)height), 1.0f, 1000.0f);
   	glMatrixMode(GL_MODELVIEW);
   	glLoadIdentity();
@@ -52,7 +52,8 @@ void GFXEngine::drawIngame(const World& world, EventManager evt)
 			int tr=pickTriangle(evt.button_x, evt.button_y, triangleGraph);
 			if(tr!=counter)
 			{
-				file<<tr<<"\n";
+				file<<tr<<",";
+				std::cout<<tr<<"\n";
 				level[tr].color = Vector3f(0.7,0.7,0.7);
 				level[tr].type = 1;
 				level[tr].height = 1.1;
@@ -60,55 +61,45 @@ void GFXEngine::drawIngame(const World& world, EventManager evt)
 			}
 			if(tr>=0)counter=tr;
 		}
-		if (evt.upPressed())rotx+=1.1;
-        if (evt.downPressed())rotx-=1.1;
-        if (evt.leftPressed())roty+=1.1;
-        if (evt.rightPressed())roty-=1.1;
+		if (evt.upPressed())rotx+=1.5;
+        if (evt.downPressed())rotx-=1.5;
+        if (evt.leftPressed())roty+=1.5;
+        if (evt.rightPressed())roty-=1.5;
+		if (evt.plus_pressed()){
+			scale*=1.05;if (scale>1.0f)scale=1.0f;
+		}
+        if (evt.minus_pressed()){scale/=1.05;if (scale<0.01f)scale=0.01f;}
 
 		glBegin(GL_TRIANGLES);
 		for (int i=0;i<n;i++)
 		{
 			bool active=false;
 			if (counter==i) active=true; else active=false;
-			switch(level[i].type)
-			{
-			case 0: { // base tile
-					const Vector3f& color=level[i].color;
-					const Vector3f& a=triangleGraph[i].a;
-					const Vector3f& b=triangleGraph[i].b;
-					const Vector3f& c=triangleGraph[i].c;
-					glColor3f(color.x,color.y,color.z);
-					if(active)glColor3f(1,1,0);
-					glVertex3f(a.x,a.y,a.z);	
-					glVertex3f(b.x,b.y,b.z);
-					glVertex3f(c.x,c.y,c.z); break;}
-			case 1: { // mountain tile
-					const Vector3f& color=level[i].color;
-					const float height_factor = level[i].height;
-					const Vector3f& a=triangleGraph[i].a;
-					const Vector3f& b=triangleGraph[i].b;
-					const Vector3f& c=triangleGraph[i].c;
-					glColor3f(color.x,color.y,color.z);
-					if(active)glColor3f(1,1,0);
-					Vector3f a_new = a * height_factor;
-					Vector3f b_new = b * height_factor;
-					Vector3f c_new = c * height_factor;
-					glVertex3f(a_new.x,a_new.y,a_new.z);	
-					glVertex3f(b_new.x,b_new.y,b_new.z);
-					glVertex3f(c_new.x,c_new.y,c_new.z);
 
-					glColor3f(0.5,0.5,0.5);
-					glVertex3f(a_new.x,a_new.y,a_new.z);
-					glVertex3f(b_new.x,b_new.y,b_new.z);
-					glVertex3f(0,0,0);
-					glVertex3f(a_new.x,a_new.y,a_new.z);
-					glVertex3f(c_new.x,c_new.y,c_new.z);
-					glVertex3f(0,0,0);
-					glVertex3f(b_new.x,b_new.y,b_new.z);
-					glVertex3f(c_new.x,c_new.y,c_new.z);
-					glVertex3f(0,0,0);break;}
-			}
-				
+			const Vector3f& color=level[i].color;
+			const float height_factor = level[i].height;
+			const Vector3f& a=triangleGraph[i].a;
+			const Vector3f& b=triangleGraph[i].b;
+			const Vector3f& c=triangleGraph[i].c;
+			glColor3f(color.x,color.y,color.z);
+			if(active)glColor3f(1,1,0);
+			Vector3f a_new = a * height_factor;
+			Vector3f b_new = b * height_factor;
+			Vector3f c_new = c * height_factor;
+			glVertex3f(a_new.x,a_new.y,a_new.z);	
+			glVertex3f(b_new.x,b_new.y,b_new.z);
+			glVertex3f(c_new.x,c_new.y,c_new.z);
+
+			//glColor3f(0.5,0.5,0.5);
+			glVertex3f(a_new.x,a_new.y,a_new.z);
+			glVertex3f(b_new.x,b_new.y,b_new.z);
+			glVertex3f(0,0,0);
+			glVertex3f(a_new.x,a_new.y,a_new.z);
+			glVertex3f(c_new.x,c_new.y,c_new.z);
+			glVertex3f(0,0,0);
+			glVertex3f(b_new.x,b_new.y,b_new.z);
+			glVertex3f(c_new.x,c_new.y,c_new.z);
+			glVertex3f(0,0,0);			
 		}
 		glEnd();
 	}

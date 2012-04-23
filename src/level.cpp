@@ -6,7 +6,7 @@
 
 Level::Level(int n,int id):_tg(TriangleGraph::TriangleGraph(n)),_size(_tg.size()),id(id)
 {
-	srand(17);
+	//srand(17);
 	_tiles = new Tile[_size]();
 	/*for (int i=0;i<_size;i++)if (i%2==0) 
 	{

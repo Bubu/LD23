@@ -10,7 +10,7 @@ class EventManager
 	EventManager():	_upTyped(false),_downTyped(false),_leftTyped(false),_rightTyped(false),
 					_upPressed(false),_downPressed(false),_leftPressed(false),_rightPressed(false),
 					_escTyped(false),_actionPressed(false),_jumpPressed(false),_frameLimit(true),
-					_fullScreenToggled(false),_keyTyped(false),_exit(false),_number(0),_maxNumber(0){}
+					_fullScreenToggled(false),_plusTyped(false),_minusTyped(false),_keyTyped(false),_exit(false),_number(0),_maxNumber(0){}
 	inline void setMaxNumber(int i){_maxNumber=i;}
 	inline int number()const {return _number;}
 	inline bool upPressed()const{return _upPressed;}
@@ -30,7 +30,13 @@ class EventManager
 
 	int button_x , button_y;
 	int change;
+
 	
+	inline bool plus_pressed()const{return _plus_pressed;}
+	inline bool minus_pressed()const{return _minus_pressed;}
+	inline bool plus_typed()const{return _plusTyped;}
+	inline bool minus_typed()const{return _minusTyped;}
+
 	void setTime();	
 	
   private:
@@ -54,6 +60,7 @@ class EventManager
 	bool _actionPressed;
 	bool _jumpPressed;
 	bool _fullScreenToggled;	
+	bool _plus_pressed, _minus_pressed, _plusTyped, _minusTyped;
 	
 	bool _exit;	
 	
