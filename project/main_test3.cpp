@@ -3,11 +3,17 @@
 #include <iostream>
 #include <Shader.h>
 #include <math.h>
+#include <World.h>
 #include <Genie.h>
-
+#include <GFXEngine.h>
+#include <Player.h>
 #include <IrrKlang/irrKlang.h>
 #pragma comment(lib, "irrKlang.lib")
 
+GFXEngine gfxEngine;
+World world;
+Genie genie; 
+Player player(genie,world);
 static Shader shader_per_pixel(
 "varying vec3 n;"\
 "varying vec4 c;"\
@@ -47,7 +53,7 @@ bool frameLimit=true;
 bool wireframe=false;
 Uint32 time_;
 Uint32 fps=60;
-Genie genie;
+//Genie genie;
 //TriangleGraph tg (1);
 
 static Uint32 getDelay()
@@ -91,7 +97,7 @@ static void draw ()
   	glRotated (rotx, 1.0f, 0.0f, 0.0f);
   	glRotated (roty, 0.0f, 1.0f, 0.0f);
   	glRotated (rotz, 0.0f, 0.0f, 1.0f);
-  	const float su=sin(u); const float cu=cos(u);
+ /* 	const float su=sin(u); const float cu=cos(u);
   	const float sv=sin(v); const float cv=cos(v);
   	const Vector3f U(cu*cv,cu*sv,-su);
   	const Vector3f V(su*cv,su*sv,cu);
@@ -99,7 +105,7 @@ static void draw ()
   	
   	Matrix3x3f r=Matrix3x3f(U.x, U.y, U.z,
    					 		V.x, V.y, V.z,
-					 		W.x, W.y, W.z);/**/
+					 		W.x, W.y, W.z);
 	r.transpose();
 	genie.setRotation(r);
 	
@@ -131,10 +137,7 @@ static void draw ()
 							s*r.m01,s*r.m11,s*r.m21,0.0f,
 							s*r.m02,s*r.m12,s*r.m22,0.0f,
 							t.x    ,t.y    ,t.z    ,1.0f};
-			/*float m[16]={	s*r.m00,s*r.m10,s*r.m20,0.0f,
-							s*r.m01,s*r.m11,s*r.m21,0.0f,
-							s*r.m02,s*r.m12,s*r.m22,0.0f,
-							0    ,1    ,0    ,1.0f};*/
+		
 			glMultMatrixf(m);
 			glPointSize(11.0f);
 			glBegin(GL_POINTS);
@@ -148,68 +151,12 @@ static void draw ()
 					<<"  |"<<r.m20<<" "<<r.m21<<" "<<r.m22<<"|\n"
 					<<"det(r)="<<det(r)<<"\n";
 	}
-  	/*glBegin(GL_QUADS);
-		// Front Face
-		glNormal3f( 0.0f,  0.0f,  1.0f);
-		glVertex3f(-1.0f, -1.0f,  1.0f);
-		glVertex3f( 1.0f, -1.0f,  1.0f);
-		glVertex3f( 1.0f,  1.0f,  1.0f);
-		glVertex3f(-1.0f,  1.0f,  1.0f);
-		// Back Face
-		glNormal3f( 0.0f,  0.0f, -1.0f);
-		glVertex3f(-1.0f, -1.0f, -1.0f);
-		glVertex3f(-1.0f,  1.0f, -1.0f);
-		glVertex3f( 1.0f,  1.0f, -1.0f);
-		glVertex3f( 1.0f, -1.0f, -1.0f);
-		// Top Face
-		glNormal3f( 0.0f,  1.0f,  0.0f);
-		glVertex3f(-1.0f,  1.0f, -1.0f);
-		glVertex3f(-1.0f,  1.0f,  1.0f);
-		glVertex3f( 1.0f,  1.0f,  1.0f);
-		glVertex3f( 1.0f,  1.0f, -1.0f);
-		// Bottom Face
-		glNormal3f( 0.0f, -1.0f,  0.0f);
-		glVertex3f(-1.0f, -1.0f, -1.0f);
-		glVertex3f( 1.0f, -1.0f, -1.0f);
-		glVertex3f( 1.0f, -1.0f,  1.0f);
-		glVertex3f(-1.0f, -1.0f,  1.0f);
-		// Right face
-		glNormal3f( 1.0f,  0.0f,  0.0f);
-		glVertex3f( 1.0f, -1.0f, -1.0f);
-		glVertex3f( 1.0f,  1.0f, -1.0f);
-		glVertex3f( 1.0f,  1.0f,  1.0f);
-		glVertex3f( 1.0f, -1.0f,  1.0f);
-		// Left Face
-		glNormal3f(-1.0f,  0.0f,  0.0f);
-		glVertex3f(-1.0f, -1.0f, -1.0f);
-		glVertex3f(-1.0f, -1.0f,  1.0f);
-		glVertex3f(-1.0f,  1.0f,  1.0f);
-		glVertex3f(-1.0f,  1.0f, -1.0f);
-	glEnd();*/
+  	
 	
-	/*glBegin(GL_TRIANGLES);
-		for(int i=0;i<tg.size();i++)
-		{
-			glVertex3f(tg[i].a.x, tg[i].a.y, tg[i].a.z);
-			glVertex3f(tg[i].b.x, tg[i].b.y, tg[i].b.z);
-			glVertex3f(tg[i].c.x, tg[i].c.y, tg[i].c.z);
-		}
-	glEnd();
-	glBegin(GL_LINES);
-	glColor3f(0,0,1);
 
-	for(int i=0;i<tg.size();i++)
-		{
-			glVertex3f(tg[i].centerPoint().x, tg[i].centerPoint().y, tg[i].centerPoint().z);
-			glVertex3f(tg[tg[i].n0].centerPoint().x, tg[tg[i].n0].centerPoint().y, tg[tg[i].n0].centerPoint().z);
-			glVertex3f(tg[i].centerPoint().x, tg[i].centerPoint().y, tg[i].centerPoint().z);
-			glVertex3f(tg[tg[i].n1].centerPoint().x, tg[tg[i].n1].centerPoint().y, tg[tg[i].n1].centerPoint().z);
-			glVertex3f(tg[i].centerPoint().x, tg[i].centerPoint().y, tg[i].centerPoint().z);
-			glVertex3f(tg[tg[i].n2].centerPoint().x, tg[tg[i].n2].centerPoint().y, tg[tg[i].n2].centerPoint().z);
-		}
-	glEnd();*/
 	genie.draw();
-	Shader::unuse();
+	Shader::unuse();*/
+	gfxEngine.drawGenie(genie, player);
   	SDL_GL_SwapBuffers();
 }
 

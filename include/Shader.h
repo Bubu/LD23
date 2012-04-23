@@ -27,5 +27,6 @@ class Shader
     GLuint fragment_main;
     std::string sv;
     std::string sf;
+    bool compiled;
 };
 #endif

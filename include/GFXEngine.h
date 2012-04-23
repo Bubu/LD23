@@ -31,8 +31,9 @@ class GFXEngine
 	void frameEnd();
 	
 	void toggleFullscreen();
-  protected:
 	void drawGenie(const Genie& genie, const Player& player);
+  protected:
+	
 	//int nextpoweroftwo(int x);
 	//std::string	convertInt(int number);
 	/*void SDL_GL_RenderText(std::string stringtext, 

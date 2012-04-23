@@ -1,7 +1,7 @@
 #include <Shader.h>
 #include <fstream>
 #include <iostream>
-Shader::Shader(std::string vertex, std::string fragment):sv(vertex),sf(fragment)
+Shader::Shader(std::string vertex, std::string fragment):sv(vertex),sf(fragment),compiled(false)
 {
     /*char c;
 	std::ifstream ivs( vertex.c_str());	
@@ -24,6 +24,7 @@ Shader::Shader(std::string vertex, std::string fragment):sv(vertex),sf(fragment)
 
 bool Shader::compileAndLink()
 {
+	compiled=true;
 	program=glCreateProgram(); 
 	vertex_main=glCreateShader(GL_VERTEX_SHADER);
 	fragment_main=glCreateShader(GL_FRAGMENT_SHADER);
@@ -54,6 +55,7 @@ bool Shader::compileAndLink()
 
 bool Shader::use()
 {
+	if (!compiled)compileAndLink();
 	GLint Link_Status;
 	glGetProgramiv(program,GL_LINK_STATUS,&Link_Status);
 	if (!Link_Status)return false;  
