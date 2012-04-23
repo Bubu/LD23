@@ -17,6 +17,7 @@
     <ClCompile Include="..\..\src\GFXEngine_World.cpp" />
     <ClCompile Include="..\..\src\Init.cpp" />
     <ClCompile Include="..\..\src\level.cpp" />
+    <ClCompile Include="..\..\src\Player.cpp" />
     <ClCompile Include="..\..\src\ProgamManager.cpp" />
     <ClCompile Include="..\..\src\SFXEngine.cpp" />
     <ClCompile Include="..\..\src\Shader.cpp" />
@@ -24,6 +25,7 @@
     <ClCompile Include="..\..\src\TriangleGraph.cpp" />
     <ClCompile Include="..\..\src\World.cpp" />
     <ClCompile Include="..\main_test1.cpp" />
+    <ClCompile Include="..\main_test2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\EventManager.h" />
@@ -33,6 +35,7 @@
     <ClInclude Include="..\..\include\level.h" />
     <ClInclude Include="..\..\include\Matrix3x3f.h" />
     <ClInclude Include="..\..\include\Menu.h" />
+    <ClInclude Include="..\..\include\Player.h" />
     <ClInclude Include="..\..\include\ProgamManager.h" />
     <ClInclude Include="..\..\include\SFXEngine.h" />
     <ClInclude Include="..\..\include\Shader.h" />
