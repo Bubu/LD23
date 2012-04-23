@@ -37,9 +37,19 @@ World::World():_level0(Level(3,0)),_level1(Level(3,1)),_level2(Level(3,2)),maxLe
 	_level0[794].color = Vector3f(1,1,1);
 	_level0[794].height = 1.0;
 
-	_level0[772].type = 7; 
+	_level0[772].type = 8;
+	_level0[772].doorid = 0;
 	_level0[772].color = Vector3f(0.30,0.20,0.15);
 	_level0[772].height = 1.1;
+
+	_level0[106].type = 6;
+	_level0[106].item = 0;
+	_level0[106].color = Vector3f(239,183,52) / 255;
+	_level0[106].height = 1;
+
+	_level0[0].type = 10;
+	_level0[0].color = Vector3f(255,255,255) / 255;
+	_level0[0].height = 1.0;
 
 	
 	const int water_count = 3+51;
