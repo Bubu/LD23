@@ -75,6 +75,30 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 			glVertex3f(a.x,a.y,a.z);	
 			glVertex3f(b.x,b.y,b.z);
 			glVertex3f(c.x,c.y,c.z);	
+			const Vector3f& color=level[i].color;
+			const float height_factor = level[i].height;
+			const Vector3f& a=triangleGraph[i].a;
+			const Vector3f& b=triangleGraph[i].b;
+			const Vector3f& c=triangleGraph[i].c;
+			glColor3f(color.x,color.y,color.z);
+			//if(active)glColor3f(1,1,0);
+			Vector3f a_new = a * height_factor;
+			Vector3f b_new = b * height_factor;
+			Vector3f c_new = c * height_factor;
+			glVertex3f(a_new.x,a_new.y,a_new.z);	
+			glVertex3f(b_new.x,b_new.y,b_new.z);
+			glVertex3f(c_new.x,c_new.y,c_new.z);
+
+			//glColor3f(0.5,0.5,0.5);
+			glVertex3f(a_new.x,a_new.y,a_new.z);
+			glVertex3f(b_new.x,b_new.y,b_new.z);
+			glVertex3f(0,0,0);
+			glVertex3f(a_new.x,a_new.y,a_new.z);
+			glVertex3f(c_new.x,c_new.y,c_new.z);
+			glVertex3f(0,0,0);
+			glVertex3f(b_new.x,b_new.y,b_new.z);
+			glVertex3f(c_new.x,c_new.y,c_new.z);
+			glVertex3f(0,0,0);			
 		}
 		glEnd();
 		drawGenie(world.genie(), player);
