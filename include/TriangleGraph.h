@@ -17,6 +17,7 @@ class TriangleGraph
 		  inline Triangle(const Vector3f& a, const Vector3f& b, const Vector3f& c, int id):a(a),b(b),c(c),n0(-1),n1(-1),n2(-1),id(id){}
 		  inline Triangle():n0(-1),n1(-1),n2(-1),id(-1){}
 		  inline Vector3f centerPoint()const{return (a + b + c)/3;}
+		  inline bool isInside(const Vector3f x)const; 
 	};
 	//Triangle operator[](int i)const{return triangles[i]};
 	//inline Triangle& operator[](int i){return _triangles[i];}
@@ -38,4 +39,10 @@ class TriangleGraph
 	void normalize(Triangle* triangles, int lenght);
 	TriangleGraph::Triangle* TriangleGraph::calculateStartTriangles();
 };
+
+bool TriangleGraph::Triangle::isInside(const Vector3f x)const
+{
+	const Vector3f n[4]={cross(b-a,c-a),	cross(  a,  b),	cross(  b,  c), cross(  c,  a)};
+	return (dot(n[0],x)>0 && dot(n[1],x)>0 && dot(n[2],x)>0 && dot(n[3],x)>0);	
+}
 #endif

@@ -7,7 +7,7 @@
 #include <GFXEngine.h>
 #include <SFXEngine.h>
 #include <EventManager.h>
-ProgramManager::ProgramManager(): _world(World()),_player(Player(_world.genie_()))
+ProgramManager::ProgramManager(): _world(World()),_player(Player(_world.genie_(),_world))
 {
 	eventManager=new EventManager();
 	gfxEngine=new GFXEngine();
@@ -62,13 +62,22 @@ int ProgramManager::menuTick()
 int ProgramManager::ingameTick() 
 {
 	gfxEngine->drawIngame(_world,_player);
+	const bool down=eventManager->downPressed();
+	const bool up=eventManager->upPressed();
 	const bool right=eventManager->rightPressed();
 	const bool left=eventManager->leftPressed();
+	const bool jumped=eventManager->jumpPressed();
 	const float t=eventManager->duration();
 	
-	if (right&&!left)_player.addRoty( t);
-	if (left&&!right)_player.addRoty(-t);
-	std::cout<<"t: "<<t<<" roty: "<<_player.roty()<<"\n";
+	float move=0.0f; if (down)move-=t* 1.0f; if (up)move+=t*1.0f;
+	float roty=0.0f; if (left)roty-=t*3.0f; if (right)roty+=t*3.0f;
+	float jump=0.0f; if (jumped)jump+=t;
+	//if (right&&!left)_player.addRoty( t*10);
+	//if (left&&!right)_player.addRoty(-t*10);
+	//if (down&&!up)_player.moveForward(-t*5,_world.level(_world.current()).triangleGraph());
+	//if (up&&!down)_player.moveForward( t*5,_world.level(_world.current()).triangleGraph());
+	_player.tick(t,move,jump,roty);
+	//std::cout<<"t: "<<t<<" roty: "<<_player.roty()<<"\n";
 	sfxEngine->playTestSound(eventManager->jumpPressed());
 	if (eventManager->escTyped())
 	{	

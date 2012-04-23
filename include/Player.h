@@ -2,10 +2,12 @@
 #define __Player_H_INCLUDED__
 #include <Genie.h>
 #include <Matrix3x3f.h>
+//class TriangleGraph;
+class World;
 class Player
 {
   public:
-	Player(Genie& _genie);	
+	Player(Genie& _genie, const World& world);	
 	void getTransformation(Vector3f& pos, Matrix3x3f& rot)const;
 	void getTransformation(float m[16])const;
 	void getInverseTransformation(Vector3f& pos, Matrix3x3f& rot)const;
@@ -13,11 +15,19 @@ class Player
 	Vector3f cameraPos()const;
 	float cameraAngle()const;
 	inline float roty()const{return _roty;}
-	void addRoty(float f);
-  private:	
-	float _teta,_phi,_roty;
-
+	inline float h()const {return _h;}
+	void tick(float time, float move, float jump, float roty);
+	inline int trinagle()const{return _trinagle;} 
+  private:
+	void _addRoty(float f);
+	void _moveForward(float f);
+	void _jump(float f, float t);	
+	float _teta,_phi,_roty,_h;
+	float _v,_vElevator;
+	int _trinagle;
+	
 	Genie& _genie;
+	const World& _world;
 	
 	
 	

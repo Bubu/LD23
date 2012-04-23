@@ -17,7 +17,7 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
     glViewport(0, 0, width, height);
   	glMatrixMode(GL_PROJECTION);
   	glLoadIdentity();
-  	gluPerspective(fovy,((float)width)/((float)height), 0.10f, 100.000);
+  	gluPerspective(fovy,((float)width)/((float)height), 0.01f, 4.000);
   	//gluPerspective(fovy,((float)width)/((float)height), 1.0f, 1000.0f);
   	glMatrixMode(GL_MODELVIEW);
   	glLoadIdentity();
@@ -71,6 +71,7 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 			const Vector3f& b=triangleGraph[i].b;
 			const Vector3f& c=triangleGraph[i].c;
 			glColor3f(color.x,color.y,color.z);
+			if (player.trinagle()==i)glColor3f(1,1,1);
 			glVertex3f(a.x,a.y,a.z);	
 			glVertex3f(b.x,b.y,b.z);
 			glVertex3f(c.x,c.y,c.z);	
@@ -140,12 +141,13 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 		const float s=0.05;
 		float m[16];
 		player.getTransformation(m);
-		
-		m[0]*=s;m[1]*=s;m[2]*=s;
+		float h=player.h();
+		m[0]*=s;m[1]*=s;m[2]*=s; 
 		m[4]*=s;m[5]*=s;m[6]*=s;
 		m[8]*=s;m[9]*=s;m[10]*=s;
 		glMultMatrixf(m);
 		glRotatef(roty,0.0f,1.0f,0.0f);
+		glTranslatef(0.0f,h,0.0f);
 		Vector3f points[10]; genie.getPositions(points);
 		
 		glPointSize(11.0f);

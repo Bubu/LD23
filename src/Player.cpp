@@ -1,8 +1,14 @@
 #include <Player.h>
+#include <World.h>
+#include <TriangleGraph.h>
+#include <iostream>
 static const float pi=3.1415926535897932384626433832795f ;
-Player::Player(Genie& genie):_genie(genie),_teta(pi/2.0),_phi(pi),_roty(0.0f)
+static const float _vElevatorMax=0.1f;
+Player::Player(Genie& genie, const World& world):
+	_genie(genie),_teta(pi/2.0),_phi(pi),_roty(0.0f),_h(0.0f),_v(0.0f),_vElevator(_vElevatorMax),
+	_world(world)
 {
-	
+	_moveForward(0.0f);
 	
 }	
 
@@ -46,7 +52,7 @@ void Player::getInverseTransformation(float m[16])const
   	m[ 2]=  sv ; m[ 6]= -cv ; m[10]=0.0f; m[14]= 0.0f;
   	m[ 3]= 0.0f; m[ 7]= 0.0f; m[11]=0.0f; m[15]= 1.0f;
 }
-void Player::addRoty(float f)
+void Player::_addRoty(float f)
 {
 	_roty+=f*pi*2;
 	if (_roty<  0.0  )_roty+=pi*2.0f;
@@ -60,4 +66,51 @@ Vector3f Player::cameraPos()const
 float Player::cameraAngle()const
 {
 	return -60.0f/180.0f*pi;
+}
+
+void Player::_moveForward(float f)
+{
+	Vector3f x,p;
+	Matrix3x3f R;
+	getTransformation(x, R);
+	/*Matrix3x3f R2=R*makeRotYMatrix3x3( _roty);
+	Matrix3x3f RT=R2;
+	RT.transpose();
+	Matrix3x3f Rx=makeRotXMatrix3x3(f*pi*2);
+	p=RT*(Rx*(R2*x));*/
+	p=Vector3f(R.m02,R.m12,R.m22)*(cos( _roty)*f)+Vector3f(R.m00,R.m10,R.m20)*(sin( _roty)*f)+x;
+	p.normalize();
+	//p*=1.0f+_h;
+	
+	_phi=atan2(p.y,p.x);
+	_teta=acos(p.z);
+	_trinagle =-1;
+	const TriangleGraph& triangleGraph = _world.level(_world.current()).triangleGraph();
+	for (int i=0;i<triangleGraph.size();i++)
+	{
+		if (triangleGraph[i].isInside(p))_trinagle=i;
+	}
+}
+
+void Player::_jump(float f, float t)
+{
+	if (_h==0.0f && _vElevator==_vElevatorMax && f>0.0f)_v=0.3;
+	const float newv=(_vElevator<f)?_vElevator:f;
+	_vElevator-=newv;
+	_v+=newv*30.f-20*t;
+	_h+=_v*t*20.0;//-9.81f*f*f;
+	std::cout<<"_jump:("<<f<<","<<_h<<","<<_v<<")["<<_vElevator<<"]["<<newv<<"]\n";
+	if (_h<0.0)
+	{
+		_h=0.0f;
+		_vElevator=_vElevatorMax;
+		_v=0.0f;
+	}
+}
+
+void Player::tick(float time, float move, float jump, float roty)
+{
+	_jump(jump,time);
+	_addRoty(roty);	
+	_moveForward(move);
 }

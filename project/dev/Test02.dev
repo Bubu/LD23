@@ -1,7 +1,7 @@
 [Project]
 FileName=Test02.dev
 Name=Test01
-UnitCount=26
+UnitCount=28
 Type=1
 Ver=1
 ObjFiles=
@@ -299,6 +299,26 @@ BuildCmd=
 
 [Unit26]
 FileName=..\..\include\Genie.h
+CompileCpp=1
+Folder=include
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit27]
+FileName=..\..\include\Matrix3x3f.h
+CompileCpp=1
+Folder=include
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit28]
+FileName=..\..\include\Vector3f.h
 CompileCpp=1
 Folder=include
 Compile=1
