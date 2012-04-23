@@ -9,6 +9,7 @@
 #include <EventManager.h>
 ProgramManager::ProgramManager(): _world(World()),_player(Player(_world.genie_(),_world))
 {
+	_world.setPlayer(_player);
 	eventManager=new EventManager();
 	gfxEngine=new GFXEngine();
 	sfxEngine=new SFXEngine();

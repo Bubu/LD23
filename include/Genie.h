@@ -11,6 +11,8 @@ class Genie
 	void setTranlation(const Vector3f t){_translate=t;}
 	void setScale(float s){_scale=s;}
 	void getPositions(Vector3f points[10])const;
+	inline int triangle()const {return _triangleId;}
+	inline void setTriangle(int i){_triangleId=i;}
   private:	
 	
 	int _triangleId;

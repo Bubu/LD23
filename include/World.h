@@ -4,6 +4,8 @@
 #include <Level.h>
 #include <Genie.h>
 #include <Projectile.h>
+#include <Player.h>
+//class Player;
 class World
 {
   public:
@@ -19,12 +21,13 @@ class World
 		{_attack=Projectile(revolutionsPerSecond,lifeTime,r);}
 	inline Genie& genie_(){return _genie;}
 	void tick(float time);
+	inline void setPlayer(Player& player){_player=&player;}
   private:
 	int _currentLevel;
 	Level _level0,_level1,_level2;
 	Genie _genie;
 	Projectile _attack;
-	
+	Player* _player;
 };
 
 const Level& World::level(int i)const

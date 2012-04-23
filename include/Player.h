@@ -18,6 +18,7 @@ class Player
 	inline float h()const {return _h;}
 	void tick(float time, float move, float jump, float roty, bool shoot);
 	inline int trinagle()const{return _trinagle;} 
+	void setTriangle(int i);
   private:
 	void _addRoty(float f);
 	void _moveForward(float f);
