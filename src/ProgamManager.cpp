@@ -12,6 +12,12 @@ ProgramManager::ProgramManager(): _world(World()),_player(Player(_world.genie_()
 	eventManager=new EventManager();
 	gfxEngine=new GFXEngine();
 	sfxEngine=new SFXEngine();
+	gfxEngine->rotx=0;
+	gfxEngine->roty=0;
+	gfxEngine->rotz=0;
+	gfxEngine->scale=0.7;
+	gfxEngine->counter=-1;
+
 }
 
 ProgramManager::~ProgramManager()
@@ -61,7 +67,7 @@ int ProgramManager::menuTick()
 
 int ProgramManager::ingameTick(int time) 
 {
-	gfxEngine->drawIngame(_world);
+	gfxEngine->drawIngame(_world, *eventManager);
 	sfxEngine->playTestSound(eventManager->jumpPressed());
 	if (eventManager->escTyped())
 	{	

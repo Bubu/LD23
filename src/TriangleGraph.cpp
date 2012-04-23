@@ -161,7 +161,6 @@ void TriangleGraph::link_triangles(Triangle* triangles)
 		case 2: t1.n1 = adjacentFaceIndices[i][1];	break;
 		}
 
-		std::cout<<"otherpoint: "<<otherPoint<<"\n";
 		if(!(same(t2.a,t1.a,0.000001) || same(t2.a,t1.b,0.000001) || same(t2.a,t1.c,0.000001)))
 		otherPoint = 0;
 		if(!(same(t2.b,t1.a,0.000001) || same(t2.b,t1.b,0.000001) || same(t2.b,t1.c,0.000001)))

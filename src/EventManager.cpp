@@ -1,6 +1,8 @@
 #include <EventManager.h>
 #include <Shader.h>
 #include <SDL/SDL.h>
+#include <iostream>
+
 #pragma comment(lib, "SDL.lib")
 #pragma comment(lib, "SDLmain.lib")
 
@@ -43,8 +45,17 @@ void EventManager::check()
 
 void EventManager::evaluate(const SDL_Event& event)
 {  
+	if(change>0) change--;
 	switch(event.type)
 	{  
+		case SDL_MOUSEBUTTONDOWN:
+				{
+					button_x = event.button.x;
+					button_y = event.button.y;
+					change = 2;
+					break;
+				}
+			
 		case SDL_KEYUP: 
 			switch (event.key.keysym.sym) 
 			{

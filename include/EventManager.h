@@ -27,6 +27,9 @@ class EventManager
 	inline bool jumpPressed()const{return _jumpPressed;}
 	inline bool getExit()const{return _exit;}
 	inline bool fullScreenToggled()const{return _fullScreenToggled;}
+
+	int button_x , button_y;
+	int change;
 	
 	void setTime();	
 	

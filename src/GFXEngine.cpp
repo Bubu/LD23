@@ -13,7 +13,7 @@
 
 GFXEngine::GFXEngine()//:_raytracer(0),texBoard(0),texBall1(0),texBall2(0)
 {
-	
+	file.open("tiles.txt");
 }
 
 
