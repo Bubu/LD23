@@ -15,6 +15,7 @@ class Level
 	  inline Tile& operator[](int i)const{return _tiles[i];}
 	  inline int size()const{return _size;}
 	  inline const TriangleGraph& triangleGraph()const{return _tg;}
+	  int startTile()const{return 997;}
   private:
 	Tile* _tiles;
 	

@@ -1,6 +1,7 @@
 #ifndef __GFXEngine_H_INCLUDED__
 #define __GFXEngine_H_INCLUDED__
 #include <string>
+#include <Vector3f.h>
 //#include <SDL/SDL.h>
 //#include <SDL/SDL_ttf.h>
 
@@ -8,7 +9,7 @@
 //class SDL_Color;
 //class SDL_Rect;	
 
-
+class Efreet;
 class Shader;
 class Menu;
 class World;
@@ -32,6 +33,7 @@ class GFXEngine
 	
 	void toggleFullscreen();
 	void drawGenie(const Genie& genie, const Player& player);
+	void drawEfreet(const Efreet& efreet, const Player& player, const Vector3f& pos);
   protected:
 	
 	//int nextpoweroftwo(int x);

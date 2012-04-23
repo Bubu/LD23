@@ -8,8 +8,8 @@ Player::Player(Genie& genie, World& world):
 	_genie(genie),_teta(pi/2.0),_phi(pi),_roty(0.0f),_h(0.0f),_v(0.0f),_vElevator(_vElevatorMax),
 	_world(world)
 {
-	_moveForward(0.0f);
-	
+	//_moveForward(0.0f);
+	setTriangle(_world.currentLevel().startTile());
 }	
 
 
@@ -85,18 +85,20 @@ void Player::_moveForward(float f)
 	R=R*ry;
 	p=R*Vector3f(0.0f,cos(f),sin(f));
 	
-	_trinagle =-1;
+	int t_trinagle =-1;
 	const TriangleGraph& triangleGraph = _world.level(_world.current()).triangleGraph();
 	for (int i=0;i<triangleGraph.size();i++)
 	{
-		if (triangleGraph[i].isInside(p))_trinagle=i;
+		if (triangleGraph[i].isInside(p))t_trinagle=i;
 	}
 	
 	
-	if (_trinagle>0 &&  !_world.currentLevel()[_trinagle].blocking)
+	if (t_trinagle>0 &&  !_world.currentLevel()[t_trinagle].blocking)
 	{
 		_phi=atan2(p.y,p.x);
 		_teta=acos(p.z/p.length());
+		_trinagle=t_trinagle;
+		_genie.setTriangle(_trinagle);
 	}
 }
 
@@ -134,4 +136,13 @@ void Player::tick(float time, float move, float jump, float roty, bool shoot)
 		_world.setAttack(0.01, 10.0f, rot ) ;
 		std::cout<<"B("<<shoot<<","<<_world.attack().isAlive()<<")\n";
 	}
+}
+
+void Player::setTriangle(int i)
+{
+	_trinagle=i;
+	const TriangleGraph& triangleGraph=_world.currentLevel().triangleGraph();
+	Vector3f p=	triangleGraph[i].a+triangleGraph[i].b+triangleGraph[i].c;
+	_phi=atan2(p.y,p.x);
+	_teta=acos(p.z/p.length());
 }

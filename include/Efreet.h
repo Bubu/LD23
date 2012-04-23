@@ -1,11 +1,11 @@
-#ifndef __Genie_h_included__
-#define __Genie_h_included__
+#ifndef __Efreet_h_included__
+#define __Efreet_h_included__
 #include <Vector3f.h>
 #include <Matrix3x3f.h>
-class Genie
+class Efreet
 {
   public:
-	Genie();	
+	Efreet();	
 	void draw();
 	void setRotation(const Matrix3x3f r){_rotation=r;}
 	void setTranlation(const Vector3f t){_translate=t;}
