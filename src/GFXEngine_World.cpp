@@ -67,20 +67,12 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 		for (int i=0;i<n;i++)
 		{
 			const Vector3f& color=level[i].color;
-			const Vector3f& a=triangleGraph[i].a;
-			const Vector3f& b=triangleGraph[i].b;
-			const Vector3f& c=triangleGraph[i].c;
-			glColor3f(color.x,color.y,color.z);
-			if (player.trinagle()==i)glColor3f(1,1,1);
-			glVertex3f(a.x,a.y,a.z);	
-			glVertex3f(b.x,b.y,b.z);
-			glVertex3f(c.x,c.y,c.z);	
-			const Vector3f& color=level[i].color;
 			const float height_factor = level[i].height;
 			const Vector3f& a=triangleGraph[i].a;
 			const Vector3f& b=triangleGraph[i].b;
 			const Vector3f& c=triangleGraph[i].c;
 			glColor3f(color.x,color.y,color.z);
+			if (player.trinagle()==i)glColor3f(1,1,1);
 			//if(active)glColor3f(1,1,0);
 			Vector3f a_new = a * height_factor;
 			Vector3f b_new = b * height_factor;

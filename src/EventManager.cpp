@@ -81,8 +81,6 @@ void EventManager::evaluate(const SDL_Event& event)
 				case SDLK_KP_ENTER:	case SDLK_RETURN:	
 									_actionPressed=true;_keyTyped=true;	break;
 				case SDLK_F1: _fullScreenToggled=true;					break;	
-				case SDLK_KP_PLUS: _plus_pressed=true;  _plusTyped=true;break;
-				case SDLK_KP_MINUS: _minus_pressed=true; _minusTyped=true;break;
 				
 			};
 			break;	
