@@ -8,7 +8,7 @@ int main (int argc, char *argv[])
     
     int done=0;
     bool _fullScreenToggled=false;
-	std::cout<<"init: "<<init("Test01", 0, 800, 600)<<std::endl;
+	std::cout<<"init: "<<init("Trapped Genie", 0, 800, 600)<<std::endl;
 		
    
 	ProgramManager programManager;
