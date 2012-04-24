@@ -171,12 +171,41 @@ void World::tick(float time)
 	{
 		_currentLevel=(_currentLevel+1)%maxLevel;
 		_player->setTriangle(currentLevel().startTile());
+		_sfxEngine->playLevelSound();
 	}
 	
 	if (tri>= 0 && currentLevel()[tri].type==10)
 	{
 		_currentLevel=0;
 		_player->setTriangle(currentLevel().startTile());
+		_sfxEngine->playDeathSound();
+	}
+	if (tri>= 0 && currentLevel()[tri].type==6)
+	{
+		//_currentLevel=0;
+		//_player->setTriangle(currentLevel().startTile());
+		//_sfxEngine->playKeySound();
+		int key=currentLevel()[tri].item;
+		
+		if (key>0)
+		{
+		 	for (int i=0;i<currentLevel().size();i++)
+			{
+				if (currentLevel()[i].doorid==key)
+				switch(_currentLevel)
+				{
+					case 0:_level0[i].blocking=false;
+					case 1:_level1[i].blocking=false;
+					case 2:_level2[i].blocking=false;
+				}	
+			}/**/
+			switch(_currentLevel)
+			{
+				case 0:_level0[tri].type=0;_level0[tri].color=Vector3f(0.5,0.694,0.01);false;
+				case 1:_level1[tri].type=0;_level1[tri].color=Vector3f(0.5,0.694,0.01);false;
+				case 2:_level2[tri].type=0;_level2[tri].color=Vector3f(0.5,0.694,0.01);false;
+			}
+		}
 	}
 	
 	//_attack.print()	;

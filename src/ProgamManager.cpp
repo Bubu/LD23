@@ -81,7 +81,8 @@ int ProgramManager::ingameTick()
 	_player.tick(t,move,jump,roty,action);
 	_world.tick(t);
 	//std::cout<<"t: "<<t<<" roty: "<<_player.roty()<<"\n";
-	sfxEngine->playTestSound(eventManager->jumpPressed());
+	sfxEngine->playJumpSound(eventManager->jumpPressed());
+	if (action)sfxEngine->playAttackSound();
 	gfxEngine->drawIngame(_world,_player);
 	if (eventManager->escTyped())
 	{	

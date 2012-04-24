@@ -105,23 +105,36 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 			const Vector3f& c=triangleGraph[i].c;
 			glColor3f(color.x,color.y,color.z);
 			if (player.trinagle()==i)glColor3f(1,1,1);
-			
+			Vector3f n;
+			shader_per_pixel.use();
 			glBegin(GL_TRIANGLES);
 			//if(active)glColor3f(1,1,0);
 			Vector3f a_new = a * height_factor;
 			Vector3f b_new = b * height_factor;
 			Vector3f c_new = c * height_factor;
-			glVertex3f(a_new.x,a_new.y,a_new.z);	
+			n=cross(b_new-a_new,c_new-a_new);
+			//n=cross(b-a,c-a)*(-1);
+			glNormal3f(n.x,n.y,n.z);
+			//glNormal3f(a.x,a.y,a.z);
+			glVertex3f(a_new.x,a_new.y,a_new.z);
+			//glNormal3f(b.x,b.y,b.z);	
 			glVertex3f(b_new.x,b_new.y,b_new.z);
+			//glNormal3f(c.x,c.y,c.z);
 			glVertex3f(c_new.x,c_new.y,c_new.z);
 
 			//glColor3f(0.5,0.5,0.5);
+			n=cross(b_new-a_new,Vector3f()-a_new);
+			glNormal3f(n.x,n.y,n.z);
 			glVertex3f(a_new.x,a_new.y,a_new.z);
 			glVertex3f(b_new.x,b_new.y,b_new.z);
 			glVertex3f(0,0,0);
+			n=cross(Vector3f()-a_new,c_new-a_new);
+			glNormal3f(n.x,n.y,n.z);
 			glVertex3f(a_new.x,a_new.y,a_new.z);
 			glVertex3f(c_new.x,c_new.y,c_new.z);
 			glVertex3f(0,0,0);
+			n=cross(b_new,c_new);
+			glNormal3f(n.x,n.y,n.z);
 			glVertex3f(b_new.x,b_new.y,b_new.z);
 			glVertex3f(c_new.x,c_new.y,c_new.z);
 			glVertex3f(0,0,0);		
@@ -131,7 +144,7 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 				drawEfreet(sefreet, player,triangleGraph[i].centerPoint());
 			}	
 		}
-	
+		//Shader::unuse();
 		
 		drawGenie(world.genie(), player);
 		const Projectile& attack=world.attack();
