@@ -2,7 +2,7 @@
 FileName=Test02.dev
 Name=Test01
 UnitCount=32
-Type=1
+Type=0
 Ver=1
 ObjFiles=
 Includes=../../include
@@ -27,7 +27,7 @@ CustomMakefile=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=0000000000000000000000
+CompilerSettings=0000000000001000000000
 
 [Unit1]
 FileName=..\main_test2.cpp
