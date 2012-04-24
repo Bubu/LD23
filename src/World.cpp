@@ -101,22 +101,22 @@ World::World():_level0(Level(3,0)),_level1(Level(3,1)),_level2(Level(3,2)),maxLe
 
 	_level0[1002].type = 6;
 	_level0[1002].item = 0;
-	_level0[1002].color = Vector3f(239,183,52) / 255;
+	_level0[1002].color = Vector3f(0.5,0.694,0.01);
 	_level0[1002].height = 1;
 
 	_level0[512].type = 6;
 	_level0[512].item = 2;
-	_level0[512].color = Vector3f(239,183,52) / 255;
+	_level0[512].color = Vector3f(0.5,0.694,0.01);
 	_level0[512].height = 1;
 
 	_level0[1111].type = 6;
 	_level0[1111].item = 3;
-	_level0[1111].color = Vector3f(239,183,52) / 255;
+	_level0[1111].color =Vector3f(0.5,0.694,0.01);
 	_level0[1111].height = 1;
 
 	_level0[299].type = 6;
 	_level0[299].item = 4;
-	_level0[299].color = Vector3f(239,183,52) / 255;
+	_level0[299].color = Vector3f(0.5,0.694,0.01);
 	_level0[299].height = 1;
 
 	/*_level0[512].type = 6;
@@ -129,7 +129,7 @@ World::World():_level0(Level(3,0)),_level1(Level(3,1)),_level2(Level(3,2)),maxLe
 	for(int i = 0; i < enemy_count; i++)
 	{
 		_level0[enemy[i]].type = 10; 
-		_level0[enemy[i]].color = Vector3f(1,0,0);//Vector3f(0.5,0.694,0.01)
+		_level0[enemy[i]].color = Vector3f(0.5,0.694,0.01);
 		_level0[enemy[i]].height = 1;
 	}
 
