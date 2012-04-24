@@ -75,12 +75,14 @@ void World::tick(float time)
 	{
 		_currentLevel=(_currentLevel+1)%maxLevel;
 		_player->setTriangle(currentLevel().startTile());
+		_sfxEngine->playLevelSound();
 	}
 	
 	if (tri>= 0 && currentLevel()[tri].type==10)
 	{
 		_currentLevel=0;
 		_player->setTriangle(currentLevel().startTile());
+		_sfxEngine->playDeathSound();
 	}
 	
 	//_attack.print()	;
