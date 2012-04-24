@@ -1,3 +1,15 @@
-Our entry for the Ludum Dare 23 72h game jam.
+You are a genie trapped on the world in a bottle, trying to get out.
 
-Skwanky rulez
+Find all the keys to unlock the three doors guarding the exit. 
+... beware of the efreets!
+
+Controls: 
+ - WASD or arrow keys to walk
+ - Space to jump (kinda useless, but looks funny :-))
+ - Ctrl to shoot white pixels (which don't do anything...)
+ - Esc to go to the menu. Second entry is the close button.
+ 
+ - Gamepads should work, but some may have confusing button layouts.
+
+
+The game could have used quite a bit more work, but is playable and the first level should be completable.
