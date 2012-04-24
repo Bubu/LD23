@@ -91,6 +91,7 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 		glBegin(GL_POINTS);
 			glVertex3f(p.x,p.y,p.z);
 		glEnd();
+		
 		const Level& level=world.level(world.current());
 		const int n=level.size();
 		const TriangleGraph& triangleGraph=level.triangleGraph();
@@ -104,7 +105,7 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 			const Vector3f& b=triangleGraph[i].b;
 			const Vector3f& c=triangleGraph[i].c;
 			glColor3f(color.x,color.y,color.z);
-			if (player.trinagle()==i)glColor3f(1,1,1);
+			//if (player.trinagle()==i)glColor3f(1,1,1);
 			Vector3f n;
 			shader_per_pixel.use();
 			glBegin(GL_TRIANGLES);
@@ -142,6 +143,10 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 			if (type==10)
 			{
 				drawEfreet(sefreet, player,triangleGraph[i].centerPoint());
+			}
+			if (type==6)
+			{
+				drawKey(triangleGraph[i].centerPoint());	
 			}	
 		}
 		//Shader::unuse();
@@ -429,21 +434,21 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 		glFlush();
 		glColor4f(0,0,1,0.1);
 		glEnable(GL_BLEND);
-		glEnable (GL_CULL_FACE);
+		//glEnable (GL_CULL_FACE);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glCullFace(GL_BACK);
 		const int seed=SDL_GetTicks(); 
 		srand(seed);
 		glBegin(GL_TRIANGLE_STRIP);
 		float a=0.0f;
-		for(int j=0;j<10;j++)
+		for(int j=0;j<5;j++)
 		{
 			a=0.0f;
-			glColor4f(0,0.1*(float)j,1,0.2);
+			glColor4f(0,0.2*(float)j,1,0.2);
 			const float f=0.1+0.09*(float)j;
-			for (int i=0;i<1000;i++)
+			for (int i=0;i<500;i++)
 			{
-				const float h=0.001f*(float)(i);
+				const float h=0.002f*(float)(i);
 				const float da=0.0001f*(float)(rand()%1000);
 				const float r=f*h*(0.3+(0.0002f*(float)(rand()%1000)));
 				const float dh=0.2-0.001*0.1*(float)(rand()%1000);
@@ -472,7 +477,7 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 				glVertex3f(cos(a)*r,(h+dh)*(h+dh),sin(a)*r);		
 			}
 		}
-		glEnd();
+		glEnd();/**/
 		/**/
 		/*for (int i=0;i<10000;i++)
 		{
@@ -529,4 +534,26 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 		glDisable(GL_BLEND);
 		glDisable(GL_CULL_FACE);
 	glPopMatrix();
+}
+
+void GFXEngine::drawKey(const Vector3f p)
+{
+	//p*=1.1;
+	Vector3f p2=p*1.02;
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+		shader_per_pixel.use();
+		glTranslatef(p2.x,p2.y,p2.z);
+		const float scale=0.02;
+		glScalef(scale,scale,scale);
+		glRotatef(20,0,1,0);
+		drawSphere(Vector3f(1,+0.1,0),0.2);
+		drawSphere(Vector3f(0.7,+0.1,0.05),0.2);
+		drawSphere(Vector3f(-1,0,0),0.3);
+		//drawSphere(Vector3f(0,0,0));
+		glScalef(1,0.2,0.2);
+		drawSphere(Vector3f(0,0.5,0),1);
+		Shader::unuse();
+	glPopMatrix();
+	
 }

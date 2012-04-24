@@ -97,7 +97,7 @@ void World::tick(float time)
 	{
 		_currentLevel=0;
 		_player->setTriangle(currentLevel().startTile());
-		_sfxEngine->playDeathSound();
+		//_sfxEngine->playDeathSound();
 	}
 	if (tri>= 0 && currentLevel()[tri].type==6)
 	{

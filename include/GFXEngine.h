@@ -34,6 +34,7 @@ class GFXEngine
 	void toggleFullscreen();
 	void drawGenie(const Genie& genie, const Player& player);
 	void drawEfreet(const Efreet& efreet, const Player& player, const Vector3f& pos);
+	void drawKey(const Vector3f p);
   protected:
 	
 	//int nextpoweroftwo(int x);
