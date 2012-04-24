@@ -187,7 +187,7 @@ void World::tick(float time)
 		//_sfxEngine->playKeySound();
 		int key=currentLevel()[tri].item;
 		
-		if (key>0)
+		if (key>=0)
 		{
 		 	for (int i=0;i<currentLevel().size();i++)
 			{
