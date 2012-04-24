@@ -96,6 +96,9 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 		const int n=level.size();
 		const TriangleGraph& triangleGraph=level.triangleGraph();
 		
+		glEnable (GL_CULL_FACE);
+		
+		glCullFace(GL_BACK);
 		for (int i=0;i<n;i++)
 		{
 			const int type=level[i].type;
@@ -150,7 +153,7 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 			}	
 		}
 		//Shader::unuse();
-		
+		glDisable (GL_CULL_FACE);
 		drawGenie(world.genie(), player);
 		const Projectile& attack=world.attack();
 		if (attack.isAlive())
@@ -177,6 +180,7 @@ void GFXEngine::drawIngamePaused(const World& world,const Player& player, const 
 	
 	//glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
 	drawIngame(world,player);
+	glDisable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc ( GL_SRC_ALPHA    , GL_ONE_MINUS_SRC_ALPHA     );
 	//Screen 
@@ -213,6 +217,22 @@ void GFXEngine::drawIngamePaused(const World& world,const Player& player, const 
 		glVertex2f(0.2f,h     ); glVertex2f(0.2f,h+0.2f);
 		glVertex2f(0.8f,h+0.2f); glVertex2f(0.8f,h     );			
 	}
+	glFlush();
+	glBegin(GL_TRIANGLES);
+		glColor3f(0.0f,0.5f,0.0f);
+		glVertex2f(0.4f,0.4+0.22f    );
+		glVertex2f(0.4f,0.4+0.38f    );
+		glVertex2f(0.6f,0.4+0.3f    );
+	glEnd();
+	
+	glBegin(GL_QUADS);
+		
+		glColor3f(1.0f,0.0f,0.0f);
+		glVertex2f(0.35f,0.25f    );
+		glVertex2f(0.65f,0.25f    );
+		glVertex2f(0.65f,0.35f    );
+		glVertex2f(0.35f,0.35f    );
+	glEnd();
 	glEnable(GL_DEPTH_TEST);
 	glEnd();
 }
@@ -289,7 +309,7 @@ void GFXEngine::drawEfreet(const Efreet& efreet, const Player& player, const Vec
 		glFlush();
 		glColor4f(1,0,0,0.1);
 		glEnable(GL_BLEND);
-		glEnable (GL_CULL_FACE);
+		//glEnable (GL_CULL_FACE);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glCullFace(GL_BACK);
 		const int seed=SDL_GetTicks(); 
@@ -315,7 +335,7 @@ void GFXEngine::drawEfreet(const Efreet& efreet, const Player& player, const Vec
 		glFlush();	
 		glCullFace(GL_FRONT);
 		srand(seed);
-		glBegin(GL_TRIANGLE_STRIP);
+		/*glBegin(GL_TRIANGLE_STRIP);
 		a=0.0f;
 		for(int j=0;j<10;j++)
 		{
@@ -332,7 +352,7 @@ void GFXEngine::drawEfreet(const Efreet& efreet, const Player& player, const Vec
 				glVertex3f(cos(a)*r,(h+dh)*(h+dh),sin(a)*r);		
 			}
 		}
-		glEnd();
+		glEnd();*/
 		/**/
 		/*for (int i=0;i<10000;i++)
 		{
@@ -540,6 +560,7 @@ void GFXEngine::drawKey(const Vector3f p)
 {
 	//p*=1.1;
 	Vector3f p2=p*1.02;
+	glColor3f(1,1,0);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 		shader_per_pixel.use();

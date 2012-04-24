@@ -19,12 +19,13 @@ GFXEngine::GFXEngine()//:_raytracer(0),texBoard(0),texBall1(0),texBall2(0)
 
 void GFXEngine::drawMenu(const Menu& menu)
 {
+	glDisable(GL_CULL_FACE);
 	//glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_NORMALIZE);
 	SDL_Surface *screen = SDL_GetVideoSurface();
 	const int _width=screen->w;
 	const int _height=screen->h;
-
+	glDisable(GL_DEPTH);
 	glViewport(0, 0, _width, _height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -36,14 +37,30 @@ void GFXEngine::drawMenu(const Menu& menu)
 	glBegin(GL_QUADS);
 	for (int i=0;i<2;i++)
 	{
-		glColor3f(0.5f,0.0f,0.5f);
+		glColor3f(0.5f,0.5f,0.5f);
 		if (menu.getStateMain()==i)	glColor3f(0.0f,1.0f,0.0f);
 		float h=((float)(i))*0.4f+0.2f;
 		
 		glVertex2f(0.2f,h     ); glVertex2f(0.2f,h+0.2f);
 		glVertex2f(0.8f,h+0.2f); glVertex2f(0.8f,h     );			
 	}
+	glFlush();
+	glEnd();
 	
+	glBegin(GL_TRIANGLES);
+		glColor3f(0.0f,0.5f,0.0f);
+		glVertex2f(0.4f,0.4+0.22f    );
+		glVertex2f(0.4f,0.4+0.38f    );
+		glVertex2f(0.6f,0.4+0.3f    );
+	glEnd();
+	
+	glBegin(GL_QUADS);
+		
+		glColor3f(1.0f,0.0f,0.0f);
+		glVertex2f(0.35f,0.25f    );
+		glVertex2f(0.65f,0.25f    );
+		glVertex2f(0.65f,0.35f    );
+		glVertex2f(0.35f,0.35f    );
 	glEnd();
 	
 	/*glBegin(GL_LINES);
