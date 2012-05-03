@@ -14,7 +14,7 @@ class Player
 	void getInverseTransformation(float m[16])const;
 	Vector3f cameraPos()const;
 	float cameraAngle()const;
-	inline float roty()const{return _roty;}
+	//inline float roty()const{return _roty;}
 	inline float h()const {return _h;}
 	void tick(float time, float move, float jump, float roty, bool shoot);
 	inline int trinagle()const{return _trinagle;} 
@@ -23,10 +23,10 @@ class Player
 	void _addRoty(float f);
 	void _moveForward(float f);
 	void _jump(float f, float t);	
-	float _teta,_phi,_roty,_h;
+	float /*_teta,_phi,_roty,*/_h;
 	float _v,_vElevator;
 	int _trinagle;
-	
+	Matrix3x3f _R;
 	Genie& _genie;
 	World& _world;
 	

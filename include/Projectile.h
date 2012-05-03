@@ -7,7 +7,7 @@ class Projectile
 {
   public:
 	inline bool isAlive()const {return _age<_lifeTime;}
-	inline Vector3f pos()const {return _r*Vector3f(0.0f,cos(_age*_revolutionsPerSecond),sin(_age*_revolutionsPerSecond));}
+	inline Vector3f pos()const {return _r*Vector3f(0.0f,cos(-_age*_revolutionsPerSecond),sin(-_age*_revolutionsPerSecond));}
 	inline void tick(float time){_age+=time;}
 	Projectile(float revolutionsPerSecond, float lifeTime, const Matrix3x3f& r ):
 		_age(0.0f),_revolutionsPerSecond(revolutionsPerSecond),_lifeTime(lifeTime),_r(r){}
@@ -21,7 +21,7 @@ class Projectile
 	{
 		std::cout<<"pr("<< _age<<","<<_revolutionsPerSecond<<","<<_lifeTime<<")\n";
 		}*/
-  private:	
+ // private:	
 	float _age;
 	/*const */float _revolutionsPerSecond;
 	/*const */float _lifeTime;

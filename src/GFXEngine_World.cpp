@@ -58,7 +58,7 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
   	const float f=57.295779513082320876798154814105f;
   	const Vector3f campos=player.cameraPos();
   	const float camangle=f*player.cameraAngle();
-  	const float roty=f*player.roty();
+  	//const float roty=f*player.roty();
   	
 	  
 	  
@@ -66,7 +66,7 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 	  
 	  glRotatef(-camangle,1.0f,0.0f,0.0f);
 	  glTranslatef(-campos.x,-campos.y,-campos.z);
-	  glRotatef(roty,0.0f,1.0f,0.0f);
+	  //glRotatef(roty,0.0f,1.0f,0.0f);
 	  
 	  
 	  
@@ -159,12 +159,26 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 		if (attack.isAlive())
 		{
 			glColor3f(1,1,1);
-			Vector3f p=attack.pos()*1.1;
+			Vector3f p=attack.pos()*1.05;
 			glPointSize(11);
 			glBegin(GL_POINTS);
 				glVertex3f(p.x,p.y,p.z);
 			glEnd();
 			glPointSize(1);
+			glBegin(GL_TRIANGLE_FAN);
+				glVertex3f(0.0f,0.0f,0.0f);
+				for (float a=0.0f;a<6.283185307179586476925286766559f;a+=0.01f)
+				{	
+					Vector3f p=attack._r*Vector3f(0.0f,cos(a),sin(a))*1.05;
+					glVertex3f(p.x,p.y,p.z);
+				}
+				
+				{	
+					Vector3f p=attack._r*Vector3f(0.0f,cos(0),sin(0))*1.05;
+					glVertex3f(p.x,p.y,p.z);
+				}
+			glEnd();
+			 //_r*Vector3f(0.0f,cos(-_age*_revolutionsPerSecond),sin(-_age*_revolutionsPerSecond)
 			std::cout<<"Projectile:("<<p.x<<","<<p.y<<","<<p.z<<"\n";
 			
 		}
@@ -267,7 +281,7 @@ void GFXEngine::drawEfreet(const Efreet& efreet, const Player& player, const Vec
 	glPushMatrix();
 		//glTranslatef(_translate.x,_translate.y,_translate.z);
 		const float f=57.295779513082320876798154814105f;
-		const float roty=f*player.roty();
+		//const float roty=f*player.roty();
 		glColor3f(1,0,0);
 		const float s=0.05;
 		float m[16];
@@ -286,7 +300,7 @@ void GFXEngine::drawEfreet(const Efreet& efreet, const Player& player, const Vec
 		m[4]*=s;m[5]*=s;m[6]*=s;
 		m[8]*=s;m[9]*=s;m[10]*=s;
 		glMultMatrixf(m);
-		glRotatef(roty,0.0f,1.0f,0.0f);
+		//glRotatef(roty,0.0f,1.0f,0.0f);
 		glTranslatef(0.0f,h,0.0f);
 		Vector3f points[10]; efreet.getPositions(points);
 		shader_per_pixel.use();
@@ -421,7 +435,7 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 	glPushMatrix();
 		//glTranslatef(_translate.x,_translate.y,_translate.z);
 		const float f=57.295779513082320876798154814105f;
-		const float roty=f*player.roty();
+		//const float roty=f*player.roty();
 		glColor3f(0,0,1);
 		const float s=0.05;
 		float m[16];
@@ -431,7 +445,7 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 		m[4]*=s;m[5]*=s;m[6]*=s;
 		m[8]*=s;m[9]*=s;m[10]*=s;
 		glMultMatrixf(m);
-		glRotatef(roty,0.0f,1.0f,0.0f);
+		glRotatef(180,0.0f,1.0f,0.0f);
 		glTranslatef(0.0f,h,0.0f);
 		Vector3f points[10]; genie.getPositions(points);
 		shader_per_pixel.use();
