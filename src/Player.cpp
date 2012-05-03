@@ -133,9 +133,14 @@ void Player::_jump(float f, float t)
 
 void Player::tick(float time, float move, float jump, float roty, bool shoot)
 {
-	_jump(jump,time);
-	_addRoty(roty);	
-	_moveForward(move);
+	/*
+	float move=0.0f; if (down)move-=t*0.01f; if (up)   move+=t*0.01f;
+	float roty=0.0f; if (left)roty-=t*0.03f; if (right)roty+=t*0.03f;
+	float jump=0.0f; if (jumped)jump+=t;
+	*/
+	_jump(jump*10,time*10);
+	_addRoty(roty*0.3333f*time);	
+	_moveForward(move*0.04f*time);
 	//std::cout<<"("<<shoot<<","<<_world.attack().isAlive()<<")\n";
 	if (shoot && !_world.attack().isAlive())
 	{
@@ -146,7 +151,7 @@ void Player::tick(float time, float move, float jump, float roty, bool shoot)
 		getTransformation(pos,rot);//Inverse*/
 		//rot=rot*ry;
 		std::cout<<"A("<<shoot<<","<<_world.attack().isAlive()<<")\n";
-		_world.setAttack(0.01, 100.0f, _R ) ;
+		_world.setAttack(0.04, 1.0f, _R ) ;
 		std::cout<<"B("<<shoot<<","<<_world.attack().isAlive()<<")\n";/**/
 	}
 }

@@ -71,9 +71,9 @@ int ProgramManager::ingameTick()
 	const bool action=eventManager->actionPressed();
 	const float t=eventManager->duration();
 	//std::cout<<"time:"<<t<<"\n";
-	float move=0.0f; if (down)move-=t*0.01f; if (up)   move+=t*0.01f;
-	float roty=0.0f; if (left)roty-=t*0.03f; if (right)roty+=t*0.03f;
-	float jump=0.0f; if (jumped)jump+=t;
+	float move=0.0f; if (down)move-=1.0f; if (up)   move+=1.0f;
+	float roty=0.0f; if (left)roty-=1.0f; if (right)roty+=1.0f;
+	float jump=0.0f; if (jumped)jump=1.0f;
 	//if (right&&!left)_player.addRoty( t*10);
 	//if (left&&!right)_player.addRoty(-t*10);
 	//if (down&&!up)_player.moveForward(-t*5,_world.level(_world.current()).triangleGraph());

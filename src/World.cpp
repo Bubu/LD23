@@ -166,6 +166,25 @@ void World::tick(float time)
 {
 	
 	_attack.tick(time);
+	int attackTriangle=-1;
+	const Vector3f attackP=_attack.pos();
+	for (int i=0;i<currentLevel().triangleGraph().size();i++)
+	{
+		if (currentLevel().triangleGraph()[i].isInside(attackP))attackTriangle=i;
+	}
+	if (attackTriangle>=0)
+	{
+		if (currentLevel()[attackTriangle].type==10)
+		{
+			switch(_currentLevel)
+			{
+				case 0:_level0[attackTriangle].type=0; break;
+				case 1:_level1[attackTriangle].type=0; break;
+				case 2:_level2[attackTriangle].type=0; break;
+			}	
+		}
+	}
+	
 	const int tri=_genie.triangle();
 	if (tri>= 0 && currentLevel()[tri].type==5)
 	{
@@ -194,16 +213,16 @@ void World::tick(float time)
 				if (currentLevel()[i].doorid==key)
 				switch(_currentLevel)
 				{
-					case 0:_level0[i].blocking=false;
-					case 1:_level1[i].blocking=false;
-					case 2:_level2[i].blocking=false;
+					case 0:_level0[i].blocking=false; break;
+					case 1:_level1[i].blocking=false; break;
+					case 2:_level2[i].blocking=false; break;
 				}	
 			}/**/
 			switch(_currentLevel)
 			{
-				case 0:_level0[tri].type=0;_level0[tri].color=Vector3f(0.5,0.694,0.01);false;
-				case 1:_level1[tri].type=0;_level1[tri].color=Vector3f(0.5,0.694,0.01);false;
-				case 2:_level2[tri].type=0;_level2[tri].color=Vector3f(0.5,0.694,0.01);false;
+				case 0:_level0[tri].type=0;_level0[tri].color=Vector3f(0.5,0.694,0.01); break;
+				case 1:_level1[tri].type=0;_level1[tri].color=Vector3f(0.5,0.694,0.01); break;
+				case 2:_level2[tri].type=0;_level2[tri].color=Vector3f(0.5,0.694,0.01); break;
 			}
 		}
 	}

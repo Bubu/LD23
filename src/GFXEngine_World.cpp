@@ -165,7 +165,7 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 				glVertex3f(p.x,p.y,p.z);
 			glEnd();
 			glPointSize(1);
-			glBegin(GL_TRIANGLE_FAN);
+			/*glBegin(GL_TRIANGLE_FAN);
 				glVertex3f(0.0f,0.0f,0.0f);
 				for (float a=0.0f;a<6.283185307179586476925286766559f;a+=0.01f)
 				{	
@@ -177,9 +177,9 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 					Vector3f p=attack._r*Vector3f(0.0f,cos(0),sin(0))*1.05;
 					glVertex3f(p.x,p.y,p.z);
 				}
-			glEnd();
+			glEnd();*/
 			 //_r*Vector3f(0.0f,cos(-_age*_revolutionsPerSecond),sin(-_age*_revolutionsPerSecond)
-			std::cout<<"Projectile:("<<p.x<<","<<p.y<<","<<p.z<<"\n";
+			//std::cout<<"Projectile:("<<p.x<<","<<p.y<<","<<p.z<<"\n";
 			
 		}
 	}
