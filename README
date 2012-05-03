@@ -1,6 +1,8 @@
 This is our entry for the Ludum Dare 23 game jam. It was quite fun to make, but the code is as expected quite horrible.
 Nonetheless if anybody is interested: here it is. Game is pretty much unfinished. Maybe we will continue working on it.
 
+http://www.ludumdare.com/compo/ludum-dare-23/?action=preview&uid=11335
+
 ~Skwanky and Bubu
 
 ________________________
@@ -13,7 +15,7 @@ Find all the keys to unlock the three doors guarding the exit.
 Controls: 
  - WASD or arrow keys to walk
  - Space to jump (kinda useless, but looks funny :-))
- - Ctrl to shoot white pixels (which don't do anything...)
+ - Ctrl to shoot white pixels (kills efreets)
  - Esc to go to the menu. Second entry is the close button.
  
  - Gamepads should work, but some may have confusing button layouts.
