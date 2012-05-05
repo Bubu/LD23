@@ -185,11 +185,15 @@ static void draw ()
 		for(int i=0;i<T.size();i++)
 		{
 			if (counter==i)glColor3f(1,1,0); else glColor3f(1,0,0);
+			Vector3f n=cross(T[i].b-T[i].a,T[i].c-T[i].a);
+			//n=cross(b-a,c-a)*(-1);
+			glNormal3f(n.x,n.y,n.z);
 			glVertex3f(T[i].a.x, T[i].a.y, T[i].a.z);
 			glVertex3f(T[i].b.x, T[i].b.y, T[i].b.z);
 			glVertex3f(T[i].c.x, T[i].c.y, T[i].c.z);
 		}
 	glEnd();
+	Shader::unuse();
 	glBegin(GL_LINES);
 	glColor3f(0,0,1);
 
@@ -204,7 +208,7 @@ static void draw ()
 			glVertex3f(T[T[i].n2].centerPoint().x, T[T[i].n2].centerPoint().y, T[T[i].n2].centerPoint().z);
 		}
 	glEnd();
-	Shader::unuse();
+	
 	glColor3f(1,1,0);
 	glPointSize(11);
 	glBegin(GL_POINTS);

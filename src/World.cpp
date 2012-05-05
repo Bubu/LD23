@@ -2,7 +2,11 @@
 #include <iostream>
 World::World():_level0(Level(3,0)),_level1(Level(3,1)),_level2(Level(3,2)),maxLevel(3),_currentLevel(0),_attack(Projectile(0.0f, 0.0f, Matrix3x3f()))
 {
-	_level0[997].color= Vector3f(1,0,0); //start tile
+	std::string error;
+	if (_level0.load("level0.lev",error))std::cout<<error<<std::endl;
+	if (_level1.load("level1.lev",error))std::cout<<error<<std::endl;
+	if (_level2.load("level2.lev",error))std::cout<<error<<std::endl;
+	/*_level0[997].color= Vector3f(1,0,0); //start tile
 
 	const int end_count = 6;
 	int end[] = {693,1119,1103,1141,671,655};
@@ -70,9 +74,7 @@ World::World():_level0(Level(3,0)),_level1(Level(3,1)),_level2(Level(3,2)),maxLe
 		if (i%2==0) _level0[grass[i]].color*=1.1;
 	}
 
-	/*_level0[794].type = 7; 
-	_level0[794].color = Vector3f(1,1,1);
-	_level0[794].height = 1.0;*/
+	
 
 	_level0[772].type = 8;
 	_level0[772].doorid = 0;
@@ -119,10 +121,7 @@ World::World():_level0(Level(3,0)),_level1(Level(3,1)),_level2(Level(3,2)),maxLe
 	_level0[299].color = Vector3f(0.5,0.694,0.01);
 	_level0[299].height = 1;
 
-	/*_level0[512].type = 6;
-	_level0[512].item = 1;
-	_level0[512].color = Vector3f(239,183,52) / 255;
-	_level0[512].height = 1;*/
+	
 
 	const int enemy_count = 15;
 	int enemy[] = {0,976,783,784,582,1097,1123,1121,1208,202,213,283,954,273,953};
@@ -157,7 +156,7 @@ World::World():_level0(Level(3,0)),_level1(Level(3,1)),_level2(Level(3,2)),maxLe
 		_level0[pit[i]].height = 0.88;
 		_level0[pit[i]].blocking = true;
 	}
-	
+	*/
 
 
 }
@@ -172,8 +171,9 @@ void World::tick(float time)
 	{
 		if (currentLevel().triangleGraph()[i].isInside(attackP))attackTriangle=i;
 	}
-	if (attackTriangle>=0)
+	/*if (attackTriangle>=0)
 	{
+		//if (attackTriangle)
 		if (currentLevel()[attackTriangle].type==10)
 		{
 			switch(_currentLevel)
@@ -183,17 +183,17 @@ void World::tick(float time)
 				case 2:_level2[attackTriangle].type=0; break;
 			}	
 		}
-	}
+	}*/
 	
 	const int tri=_genie.triangle();
-	if (tri>= 0 && currentLevel()[tri].type==5)
+	if (tri>= 0 && currentLevel()[tri].type==Tile::portal)
 	{
 		_currentLevel=(_currentLevel+1)%maxLevel;
 		_player->setTriangle(currentLevel().startTile());
 		//_sfxEngine->playLevelSound();
 	}
 	
-	if (tri>= 0 && currentLevel()[tri].type==10)
+/*	if (tri>= 0 && currentLevel()[tri].type==10)
 	{
 		_currentLevel=0;
 		_player->setTriangle(currentLevel().startTile());
@@ -217,7 +217,7 @@ void World::tick(float time)
 					case 1:_level1[i].blocking=false; break;
 					case 2:_level2[i].blocking=false; break;
 				}	
-			}/**/
+			}
 			switch(_currentLevel)
 			{
 				case 0:_level0[tri].type=0;_level0[tri].color=Vector3f(0.5,0.694,0.01); break;
@@ -225,7 +225,7 @@ void World::tick(float time)
 				case 2:_level2[tri].type=0;_level2[tri].color=Vector3f(0.5,0.694,0.01); break;
 			}
 		}
-	}
+	}*/
 	
 	//_attack.print()	;
 }

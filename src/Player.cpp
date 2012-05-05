@@ -104,8 +104,10 @@ void Player::_moveForward(float f)
 		if (triangleGraph[i].isInside(p))t_trinagle=i;
 	}
 	
-	
-	if (t_trinagle>0 &&  !_world.currentLevel()[t_trinagle].blocking)
+	float diff=_world.currentLevel()[t_trinagle].height-_world.currentLevel()[_trinagle].height;
+	if (diff <0.0) diff*=-1.0f;
+	const bool blocking=diff>0.05||_world.currentLevel()[t_trinagle].type==Tile::water;
+	if (t_trinagle>0 &&  !blocking)
 	{
 		//_phi=atan2(p.y,p.x);
 		//_teta=acos(p.z/p.length());
