@@ -96,124 +96,93 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 		const int n=level.size();
 		const TriangleGraph& triangleGraph=level.triangleGraph();
 		
-		glEnable (GL_CULL_FACE);
-		
+		//glEnable (GL_CULL_FACE);
+		glDisable (GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		const TriangleGraph &T=level.triangleGraph();
 		shader_per_pixel.use();
-	glBegin(GL_TRIANGLES);
-		for(int i=0;i<T.size();i++)
-		{
-			const float height_factor = level[i].height;
-		 	Vector3f color;
-		 	//empty=0,grass=1,mountain=2,water=3
-			switch(level[i].type)
-			{
-				case Tile::empty: 		color=Vector3f(0.5f,0.5f,0.5f);break; 
-				case Tile::grass: 		color=Vector3f(0.0f,1.0f,0.0f);break; 
-				case Tile::mountain: 	color=Vector3f(0.5f,0.4f,0.3f);break; 
-				case Tile::water: 		color=Vector3f(0.0f,0.2f,1.0f);break; 
-				case Tile::stonewall: 	color=Vector3f(0.2f,0.2f,0.2f);break;  
-				case Tile::way: 		color=Vector3f(1.0f,0.5f,0.2f);break; 
-				case Tile::street: 		color=Vector3f(0.0f,0.0f,0.0f);break;
-				case Tile::woodbridge:	color=Vector3f(0.8f,0.3f,0.0f);break; 
-				case Tile::stonebridge:	color=Vector3f(0.1f,0.1f,0.1f);break;
-				case Tile::start:		color=Vector3f(1.0f,0.0f,0.0f);break; 
-				case Tile::portal:		color=Vector3f(1.0f,0.0f,1.0f);break;	
-				
-			}//=level[i].color;
-			glColor3f(color.x,color.y,color.z);
-			Vector3f n=cross(T[i].b-T[i].a,T[i].c-T[i].a);
-			glNormal3f(n.x,n.y,n.z);
-			glVertex3f(T[i].a.x*height_factor, T[i].a.y*height_factor, T[i].a.z*height_factor);
-			glVertex3f(T[i].b.x*height_factor, T[i].b.y*height_factor, T[i].b.z*height_factor);
-			glVertex3f(T[i].c.x*height_factor, T[i].c.y*height_factor, T[i].c.z*height_factor);
-		}
-	glEnd();/**/
-	
-	glBegin(GL_QUADS);
-	for(int i=0;i<T.size();i++)
+
+	/*for (int i=0;i<T.size();i++)
 	{
-		Vector3f color;
-		
-		
-		const float h=level[i].height;
+		switch(level[i].type)
 		{
-			const float H=level[T[i].n0].height;
-			if (h<H)
-			{
-				switch(level[T[i].n0].type)
-				{
-					case Tile::empty: 		color=Vector3f(0.5f,0.5f,0.5f);break; 
-					case Tile::grass: 		color=Vector3f(0.0f,1.0f,0.0f);break; 
-					case Tile::mountain: 	color=Vector3f(0.5f,0.4f,0.3f);break; 
-					case Tile::water: 		color=Vector3f(0.0f,0.2f,1.0f);break;  
-					case Tile::stonewall: 	color=Vector3f(0.2f,0.2f,0.2f);break; 
-					case Tile::way: 		color=Vector3f(1.0f,0.5f,0.2f);break; 
-					case Tile::street: 		color=Vector3f(0.0f,0.0f,0.0f);break; 
-					case Tile::woodbridge:	color=Vector3f(0.8f,0.3f,0.0f);break; 
-					case Tile::stonebridge:	color=Vector3f(0.1f,0.1f,0.1f);break;	
-					case Tile::start:		color=Vector3f(1.0f,0.0f,0.0f);break; 
-					case Tile::portal:		color=Vector3f(1.0f,0.0f,1.0f);break;
-				}glColor3f(color.x,color.y,color.z);
-				
-				const Vector3f p[4]={T[i].a*H,T[i].a*h,T[i].c*h,T[i].c*H};
-				const Vector3f n=cross(p[0]-p[1],p[3]-p[0]).normalize(); glNormal3f(n.x,n.y,n.z);
-				glVertex3f(p[0].x,p[0].y,p[0].z);glVertex3f(p[1].x,p[1].y,p[1].z);
-				glVertex3f(p[2].x,p[2].y,p[2].z);glVertex3f(p[3].x,p[3].y,p[3].z);
-			}
-		}
-		{
-			const float H=level[T[i].n1].height;
-			if (h<H)
-			{
-				switch(level[T[i].n1].type)
-				{
-					case Tile::empty: 		color=Vector3f(0.5f,0.5f,0.5f);break; 
-					case Tile::grass: 		color=Vector3f(0.0f,1.0f,0.0f);break; 
-					case Tile::mountain: 	color=Vector3f(0.5f,0.4f,0.3f);break; 
-					case Tile::water: 		color=Vector3f(0.0f,0.2f,1.0f);break;  
-					case Tile::stonewall: 	color=Vector3f(0.2f,0.2f,0.2f);break;  
-					case Tile::way: 		color=Vector3f(1.0f,0.5f,0.2f);break; 
-					case Tile::street: 		color=Vector3f(0.0f,0.0f,0.0f);break; 
-					case Tile::woodbridge:	color=Vector3f(0.8f,0.3f,0.0f);break; 
-					case Tile::stonebridge:	color=Vector3f(0.1f,0.1f,0.1f);break;	
-					case Tile::start:		color=Vector3f(1.0f,0.0f,0.0f);break; 
-					case Tile::portal:		color=Vector3f(1.0f,0.0f,1.0f);break;
-				}glColor3f(color.x,color.y,color.z);
-				const Vector3f p[4]={T[i].b*H,T[i].b*h,T[i].a*h,T[i].a*H};
-				const Vector3f n=cross(p[0]-p[1],p[3]-p[0]).normalize(); glNormal3f(n.x,n.y,n.z);
-				glVertex3f(p[0].x,p[0].y,p[0].z);glVertex3f(p[1].x,p[1].y,p[1].z);
-				glVertex3f(p[2].x,p[2].y,p[2].z);glVertex3f(p[3].x,p[3].y,p[3].z);
-			}
-		}
-		{
-			const float H=level[T[i].n2].height;
-			if (h<H)
-			{
-				switch(level[T[i].n2].type)
-				{
-					case Tile::empty: 		color=Vector3f(0.5f,0.5f,0.5f);break; 
-					case Tile::grass: 		color=Vector3f(0.0f,1.0f,0.0f);break; 
-					case Tile::mountain: 	color=Vector3f(0.5f,0.4f,0.3f);break; 
-					case Tile::water: 		color=Vector3f(0.0f,0.2f,1.0f);break;  
-					case Tile::stonewall: 	color=Vector3f(0.2f,0.2f,0.2f);break;  
-					case Tile::way: 		color=Vector3f(1.0f,0.5f,0.2f);break; 
-					case Tile::street: 		color=Vector3f(0.0f,0.0f,0.0f);break; 
-					case Tile::woodbridge:	color=Vector3f(0.8f,0.3f,0.0f);break; 
-					case Tile::stonebridge:	color=Vector3f(0.1f,0.1f,0.1f);break;					
-					case Tile::start:		color=Vector3f(1.0f,0.0f,0.0f);break; 
-					case Tile::portal:		color=Vector3f(1.0f,0.0f,1.0f);break;	
-				}glColor3f(color.x,color.y,color.z);
-				const Vector3f p[4]={T[i].c*H,T[i].c*h,T[i].b*h,T[i].b*H};
-				const Vector3f n=cross(p[1]-p[0],p[3]-p[0]).normalize(); glNormal3f(n.x,n.y,n.z);
-				glVertex3f(p[0].x,p[0].y,p[0].z);glVertex3f(p[1].x,p[1].y,p[1].z);
-				glVertex3f(p[2].x,p[2].y,p[2].z);glVertex3f(p[3].x,p[3].y,p[3].z);
-			}
-		}
-				
+			case Tile::empty: 		drawEmptyTile(level, i, 0);			break; 
+			case Tile::grass: 		drawGrasTile(level, i, 0);			break; 
+			case Tile::mountain: 	drawMountainTile(level, i, 0);		break; 
+			case Tile::water: 		drawWaterTile(level, i, 0);			break; 
+			case Tile::stonewall: 	drawStonewallTile(level, i, 0);		break;  
+			case Tile::way: 		drawWayTile(level, i, 0);			break; 
+			case Tile::street: 		drawStreetTile(level, i, 0);		break;
+			case Tile::woodbridge:	drawWoodbridgeTile(level, i, 0);	break; 
+			case Tile::stonebridge:	drawStonebridgeTile(level, i, 0);	break;	
 			
+		}
 	}
+	drawStartTile(level, 0);
+	drawPortalTile(level, 0);*/
+	//const TriangleGraph &T=world.currentLevel().triangleGraph();
+	const int counter=player.trinagle();
+	Matrix3x3f R;
+	Vector3f v;
+	player.getTransformation(v,R);
+	int di[world.currentLevel().size()];
+	{
+		const float l=(T[0].a-T[0].b).length();
+		const Vector3f m=T[counter].centerPoint();
+		//const Vector3f v(R.m01,R.m11,R.m21);
+		for (int i=0;i<T.size();i++)
+		{
+			const int a=(int)((v-T[i].a).length()/l);
+			const int b=(int)((v-T[i].b).length()/l);
+			const int c=(int)((v-T[i].c).length()/l);
+			di[i]=a;if (b<di[i])di[i]=b;if (c<di[i])di[i]=c;
+			if(di[i]>3)di[i]=3;
+		}
+	}
+		
+		
+	Shader::unuse();
+	const float l=(T[0].a-T[0].b).length();
+	for (int i=0;i<T.size();i++)
+	{
+		const int d=di[i];
+		
+		const Vector3f u(R.m00,R.m10,R.m20);
+		const Vector3f v(R.m01,R.m11,R.m21);
+		const Vector3f w(R.m02,R.m12,R.m22);
+		const Vector3f n=cross(T[i].b-T[i].a,T[i].c-T[i].a);
+		//const float r=0.2*(float)((6*6+5-d)%6);
+		//const float g=((dot(v,n)<0))?1:0;
+		//const float b=((dot(w,T[i].a-v)>0)&&(dot(w,T[i].b-v)>0)&&(dot(w,T[i].c-v)>0))?1:0;
+		
+		bool visible=!((dot((v),n)<0))&&!((dot(w,T[i].a-v-w*l)>0)&&(dot(w,T[i].b-v-w*l)>0)&&(dot(w,T[i].c-v-w*l)>0));
+		if (visible)switch(level[i].type)
+		{
+			case Tile::empty: 		drawEmptyTile(level, i, d);		break; 
+			case Tile::grass: 		drawGrasTile(level, i, d);		break; 
+			case Tile::mountain: 	drawMountainTile(level, i, d);	break; 
+			case Tile::water: 		drawWaterTile(level, i, d);		break; 
+			case Tile::stonewall: 	drawStonewallTile(level, i, d);	break;  
+			case Tile::way: 		drawWayTile(level, i, d);			break; 
+			case Tile::street: 		drawStreetTile(level, i, d);		break;
+			case Tile::woodbridge:	drawWoodbridgeTile(level, i, d);	break; 
+			case Tile::stonebridge:	drawStonebridgeTile(level, i, d);	break;	
+			
+		}
+		/*else
+		{
+			glBegin(GL_TRIANGLES);
+			glNormal3f(n.x,n.y,n.z);
+			glColor3f(1,1,1);
+			glVertex3f(T[i].a.x, T[i].a.y, T[i].a.z);
+			glVertex3f(T[i].b.x, T[i].b.y, T[i].b.z);
+			glVertex3f(T[i].c.x, T[i].c.y, T[i].c.z);
+			glEnd();	
+		}*/
+	}
+	drawStartTile(level, 0);
+	drawPortalTile(level, 0);
+	
 	glEnd();
 	
 		glDisable (GL_CULL_FACE);

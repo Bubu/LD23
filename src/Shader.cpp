@@ -58,7 +58,7 @@ bool Shader::use()
 	if (!compiled)compileAndLink();
 	GLint Link_Status;
 	glGetProgramiv(program,GL_LINK_STATUS,&Link_Status);
-	if (!Link_Status)return false;  
+	if (!Link_Status){std::cout<<"Shader:\n"<<getLog()<<"\n";return false; } 
 	glUseProgram(program); 
 	return true; 	
 }	

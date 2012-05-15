@@ -1,8 +1,8 @@
 [Project]
 FileName=Test04.dev
 Name=Test04
-UnitCount=12
-Type=0
+UnitCount=14
+Type=1
 Ver=1
 ObjFiles=
 Includes=../../include
@@ -128,7 +128,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit13]
-FileName=..\..\src\World.cpp
+FileName=..\..\src\GFXEngine_Tiles.cpp
 CompileCpp=1
 Folder=src
 Compile=1
@@ -138,9 +138,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit14]
-FileName=..\..\src\level.cpp
+FileName=..\..\include\GFXEngine.h
 CompileCpp=1
-Folder=src
+Folder=include
 Compile=1
 Link=1
 Priority=1000

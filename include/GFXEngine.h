@@ -15,6 +15,7 @@ class Menu;
 class World;
 class Player;
 class Genie;
+class Level;
 class GFXEngine
 {
   public:
@@ -35,6 +36,18 @@ class GFXEngine
 	void drawGenie(const Genie& genie, const Player& player);
 	void drawEfreet(const Efreet& efreet, const Player& player, const Vector3f& pos);
 	void drawKey(const Vector3f p);
+	//lod: 0 near 1 middle 2 far
+	void drawEmptyTile(const Level& level, int t, int lod);
+	void drawGrasTile(const Level& level, int t, int lod);
+	void drawMountainTile(const Level& level, int t, int lod);
+	void drawWaterTile(const Level& level, int t, int lod);
+	void drawStonewallTile(const Level& level, int t, int lod);
+	void drawWayTile(const Level& level, int t, int lod);
+	void drawStreetTile(const Level& level, int t, int lod);
+	void drawWoodbridgeTile(const Level& level, int t, int lod);
+	void drawStonebridgeTile(const Level& level, int t, int lod);
+	void drawStartTile(const Level& level, int lod);
+	void drawPortalTile(const Level& level, int lod);
   protected:
 	
 	//int nextpoweroftwo(int x);

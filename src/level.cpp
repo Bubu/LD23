@@ -194,7 +194,7 @@ static inline bool getTile(const std::string& content, int& p, Tile& tile, std::
 		p+=1;
 	}
 	if (goToNextToken(content,p)){error="unexpected end of file";return false;}
-	
+	return true;
 }
 
 bool Level::load(std::string file, std::string& error)

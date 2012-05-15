@@ -1,8 +1,8 @@
 [Project]
 FileName=Test02.dev
 Name=Test02
-UnitCount=32
-Type=0
+UnitCount=33
+Type=1
 Ver=1
 ObjFiles=
 Includes=../../include
@@ -361,6 +361,16 @@ BuildCmd=
 FileName=..\..\include\Efreet.h
 CompileCpp=1
 Folder=include
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit33]
+FileName=..\..\src\GFXEngine_Tiles.cpp
+CompileCpp=1
+Folder=src
 Compile=1
 Link=1
 Priority=1000
