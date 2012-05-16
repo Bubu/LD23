@@ -251,7 +251,9 @@ static void draw ()
 int main (int argc, char *argv[])
 {
 	std::string error;
-    if(!level.load("out.lev",error)) std::cout<<"Fehler :\""<<error<<"\"\n";
+	std::string in="out.lev",out="out.lev";
+	if (argc>=2){in=std::string(argv[1]);out=std::string(argv[2]);}
+    if(!level.load(in,error)) std::cout<<"Fehler :\""<<error<<"\"\n";
     int done=0;
     bool _fullScreenToggled=false;
 	std::cout<<"init: "<<init("Test01", 0, 800, 600)<<std::endl;
@@ -450,6 +452,6 @@ int main (int argc, char *argv[])
         draw ();
     }
 	//if (SoundEngine) SoundEngine->drop();
-	level.save("out.lev");
+	level.save(out);
     return 0;
 }
