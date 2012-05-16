@@ -19,16 +19,20 @@ class Player
 	void tick(float time, float move, float jump, float roty, bool shoot);
 	inline int trinagle()const{return _trinagle;} 
 	void setTriangle(int i);
+	Vector3f DEB_trace[1000];
+	int DEB_currenttrace;
   private:
 	void _addRoty(float f);
 	void _moveForward(float f);
 	void _jump(float f, float t);	
-	float /*_teta,_phi,_roty,*/_h;
+	float _h;
 	float _v,_vElevator;
 	int _trinagle;
 	Matrix3x3f _R;
 	Genie& _genie;
 	World& _world;
+	float _camh;
+	
 	
 	
 	

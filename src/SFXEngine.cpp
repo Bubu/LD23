@@ -11,7 +11,7 @@ SFXEngine::SFXEngine()
 	_death = _soundEngine->play2D("death.wav",false,true,false,irrklang::ESM_AUTO_DETECT, true);
 	_level = _soundEngine->play2D("level.wav",false,true,false,irrklang::ESM_AUTO_DETECT, true);
 	_jump = _soundEngine->play2D("jump.wav",true,true,false,irrklang::ESM_AUTO_DETECT, true);
-	_musik = _soundEngine->play2D("music2.mp3",true,false,false,irrklang::ESM_AUTO_DETECT, true);
+	_musik = _soundEngine->play2D("music2.mp3",true,true,false,irrklang::ESM_AUTO_DETECT, true);
 	if(_testsound)_testsound->setIsPaused(true);
 }
 

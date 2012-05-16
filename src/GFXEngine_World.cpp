@@ -89,7 +89,7 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 		player.getTransformation(p,m);
 		p*=1.001f;
 		glBegin(GL_POINTS);
-			glVertex3f(p.x,p.y,p.z);
+			for (int i=0;i<1000;i++)glVertex3f(player.DEB_trace[i].x,player.DEB_trace[i].y,player.DEB_trace[i].z);
 		glEnd();
 		
 		const Level& level=world.level(world.current());
@@ -465,9 +465,7 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 	
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-		//glTranslatef(_translate.x,_translate.y,_translate.z);
 		const float f=57.295779513082320876798154814105f;
-		//const float roty=f*player.roty();
 		glColor3f(0,0,1);
 		const float s=0.05;
 		float m[16];
