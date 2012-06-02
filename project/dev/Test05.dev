@@ -1,7 +1,7 @@
 [Project]
 FileName=Test05.dev
 Name=Test05
-UnitCount=14
+UnitCount=16
 Type=1
 Ver=1
 ObjFiles=
@@ -148,9 +148,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit15]
-FileName=..\..\src\TriangleGraph.cpp
+FileName=..\..\include\Matrix4x4f.h
 CompileCpp=1
-Folder=src
+Folder=include
 Compile=1
 Link=1
 Priority=1000
@@ -158,9 +158,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit16]
-FileName=..\..\src\Efreet.cpp
+FileName=..\..\include\Vector4f.h
 CompileCpp=1
-Folder=src
+Folder=include
 Compile=1
 Link=1
 Priority=1000

@@ -19,7 +19,7 @@ class Vector3f
    inline Vector3f& operator*=(const float& other){x*=other;y*=other;z*=other;return *this;}
    //Komponentenweise Multipliokation
    inline Vector3f operator*(const Vector3f& other) const{return Vector3f(other.x*this->x,other.y*this->y,other.z*this->z);}
-   inline Vector3f& operator*=(const Vector3f& other){x*=other.x;y*=other.y;return *this;}
+   inline Vector3f& operator*=(const Vector3f& other){x*=other.x;y*=other.y;z*=other.z;return *this;}
    //Division mit einem Skalaren
    inline Vector3f operator/(const float& other) const{return Vector3f(this->x/other,this->y/other,this->z/other);}
    inline Vector3f& operator/=(const float& other){x/=other;y/=other;z/=other;return *this;}

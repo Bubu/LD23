@@ -7,6 +7,7 @@
 #include <Player.h>
 #include <iostream>
 #include <Efreet.h>
+//#include <Matrix4x4f.h>
 static Shader shader_per_pixel
 (
 	"varying vec3 n;\n"\
@@ -49,36 +50,19 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
   	glMatrixMode(GL_PROJECTION);
   	glLoadIdentity();
   	gluPerspective(fovy,((float)width)/((float)height), 0.01f, 4.000);
-  	//gluPerspective(fovy,((float)width)/((float)height), 1.0f, 1000.0f);
   	glMatrixMode(GL_MODELVIEW);
   	glLoadIdentity();
-  	//glTranslated (0, 0, -tan(fovy*0.017453292519943295769236907684886f)/0.5);	
   	float m[16];
   	player.getInverseTransformation(m);
   	const float f=57.295779513082320876798154814105f;
   	const Vector3f campos=player.cameraPos();
+  	
   	const float camangle=f*player.cameraAngle();
-  	//const float roty=f*player.roty();
-  	
 	  
+	glRotatef(-camangle,1.0f,0.0f,0.0f);
+	glTranslatef(-campos.x,-campos.y,-campos.z);
+	glMultMatrixf(m);
 	  
-	  //glTranslatef(0,sin(player.roty()),0);
-	  
-	  glRotatef(-camangle,1.0f,0.0f,0.0f);
-	  glTranslatef(-campos.x,-campos.y,-campos.z);
-	  //glRotatef(roty,0.0f,1.0f,0.0f);
-	  
-	  
-	  
-	  glMultMatrixf(m);
-	  
-	  ///
-	    //
-	  //glTranslatef(-campos.x,-campos.y,-campos.z);
-  	
-  	
-  	
-  	
 	glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
 	
 	{
@@ -96,31 +80,13 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 		const int n=level.size();
 		const TriangleGraph& triangleGraph=level.triangleGraph();
 		
-		//glEnable (GL_CULL_FACE);
+
 		glDisable (GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		const TriangleGraph &T=level.triangleGraph();
 		shader_per_pixel.use();
 
-	/*for (int i=0;i<T.size();i++)
-	{
-		switch(level[i].type)
-		{
-			case Tile::empty: 		drawEmptyTile(level, i, 0);			break; 
-			case Tile::grass: 		drawGrasTile(level, i, 0);			break; 
-			case Tile::mountain: 	drawMountainTile(level, i, 0);		break; 
-			case Tile::water: 		drawWaterTile(level, i, 0);			break; 
-			case Tile::stonewall: 	drawStonewallTile(level, i, 0);		break;  
-			case Tile::way: 		drawWayTile(level, i, 0);			break; 
-			case Tile::street: 		drawStreetTile(level, i, 0);		break;
-			case Tile::woodbridge:	drawWoodbridgeTile(level, i, 0);	break; 
-			case Tile::stonebridge:	drawStonebridgeTile(level, i, 0);	break;	
-			
-		}
-	}
-	drawStartTile(level, 0);
-	drawPortalTile(level, 0);*/
-	//const TriangleGraph &T=world.currentLevel().triangleGraph();
+
 	const int counter=player.trinagle();
 	Matrix3x3f R;
 	Vector3f v;
@@ -151,11 +117,16 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 		const Vector3f v(R.m01,R.m11,R.m21);
 		const Vector3f w(R.m02,R.m12,R.m22);
 		const Vector3f n=cross(T[i].b-T[i].a,T[i].c-T[i].a);
-		//const float r=0.2*(float)((6*6+5-d)%6);
-		//const float g=((dot(v,n)<0))?1:0;
-		//const float b=((dot(w,T[i].a-v)>0)&&(dot(w,T[i].b-v)>0)&&(dot(w,T[i].c-v)>0))?1:0;
 		
-		bool visible=!((dot((v),n)<0))&&!((dot(w,T[i].a-v-w*l)>0)&&(dot(w,T[i].b-v-w*l)>0)&&(dot(w,T[i].c-v-w*l)>0));
+		Matrix3x3f _RT=R;
+		_RT.transpose();
+		Matrix3x3f _RCT=makeRotXMatrix3x3(-player.cameraAngle());
+		const Vector3f _cameraPos=player.cameraPos();
+		bool forward=!(((dot(_RCT*Vector3f(0,0,1),_RT*T[i].a-Vector3f(0,1,0)-_cameraPos)>0)&&(dot(_RCT*Vector3f(0,0,1),_RT*T[i].b-Vector3f(0,1,0)-_cameraPos)>0)&&(dot(_RCT*Vector3f(0,0,1),_RT*T[i].c-Vector3f(0,1,0)-_cameraPos)>0)));
+				
+		bool up=!(dot(v,n)<0);
+		bool visible=up&&forward;
+		
 		if (visible)switch(level[i].type)
 		{
 			case Tile::empty: 		drawEmptyTile(level, i, d);		break; 
@@ -169,16 +140,7 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 			case Tile::stonebridge:	drawStonebridgeTile(level, i, d);	break;	
 			
 		}
-		/*else
-		{
-			glBegin(GL_TRIANGLES);
-			glNormal3f(n.x,n.y,n.z);
-			glColor3f(1,1,1);
-			glVertex3f(T[i].a.x, T[i].a.y, T[i].a.z);
-			glVertex3f(T[i].b.x, T[i].b.y, T[i].b.z);
-			glVertex3f(T[i].c.x, T[i].c.y, T[i].c.z);
-			glEnd();	
-		}*/
+
 	}
 	drawStartTile(level, 0);
 	drawPortalTile(level, 0);
@@ -197,25 +159,11 @@ void GFXEngine::drawIngame(const World& world, const Player& player)
 				glVertex3f(p.x,p.y,p.z);
 			glEnd();
 			glPointSize(1);
-			/*glBegin(GL_TRIANGLE_FAN);
-				glVertex3f(0.0f,0.0f,0.0f);
-				for (float a=0.0f;a<6.283185307179586476925286766559f;a+=0.01f)
-				{	
-					Vector3f p=attack._r*Vector3f(0.0f,cos(a),sin(a))*1.05;
-					glVertex3f(p.x,p.y,p.z);
-				}
-				
-				{	
-					Vector3f p=attack._r*Vector3f(0.0f,cos(0),sin(0))*1.05;
-					glVertex3f(p.x,p.y,p.z);
-				}
-			glEnd();*/
-			 //_r*Vector3f(0.0f,cos(-_age*_revolutionsPerSecond),sin(-_age*_revolutionsPerSecond)
-			//std::cout<<"Projectile:("<<p.x<<","<<p.y<<","<<p.z<<"\n";
-			
+
 		}
-	}
-		//world.level(world.current()).draw();
+	
+
+	}	
 }
 
 void GFXEngine::drawIngamePaused(const World& world,const Player& player, const Menu& menu)

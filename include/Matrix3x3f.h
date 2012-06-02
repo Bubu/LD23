@@ -1,5 +1,8 @@
-#ifndef __Matrix_h_included__
-#define __Matrix_h_included__
+#ifndef __Matrix3x3_h_included__
+#define __Matrix3x3_h_included__
+
+class Matrix3x3f;
+float det(const Matrix3x3f m);
 
 class Matrix3x3f
  {
@@ -43,6 +46,16 @@ class Matrix3x3f
 		t=m20;m20=m02;m02=t;
 		t=m21;m21=m12;m12=t;	
 	}  
+	inline void invert()
+	{
+		const float d=det(*this);
+		const float d00=m11*m22-m12*m21; const float d01=m02*m21-m01*m22; const float d02=m01*m12-m02*m11;
+		const float d10=m12*m20-m10*m22; const float d11=m00*m22-m02*m20; const float d12=m02*m10-m00*m12;
+		const float d20=m10*m21-m11*m20; const float d21=m01*m20-m00*m21; const float d22=m00*m11-m01*m10;
+		m00=d00/d; m01=d01/d; m02=d02/d;
+		m10=d10/d; m11=d11/d; m12=d12/d; 
+		m20=d20/d; m21=d21/d; m22=d22/d; 
+	}
 	             
    float m00,m01,m02,m10,m11,m12,m20,m21,m22;
  };

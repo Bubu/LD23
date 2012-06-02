@@ -6,6 +6,7 @@
 #include <Level.h>
 #pragma comment(lib, "irrKlang.lib")
 #include <Matrix3x3f.h>
+#include <Matrix4x4f.h>
 #include <Ray3f.h>
 #include <GFXEngine.h>
 #include <list>
@@ -26,9 +27,38 @@ Uint32 fps=60;
 Vector3f cpos;
 int counter=0;
 Matrix3x3f _R;
+Vector3f _cameraPos;
+float _cameraAngle;
 int dist=3;
 
-//TriangleGraph *tg =new TriangleGraph(lod);
+static Shader shader_per_pixel
+(
+	"varying vec3 n;\n"\
+	"varying vec3 light;"\
+	"varying vec4 color;\n"\
+	"\n"\
+	"void main()\n"\
+	"{\n"\
+	"   color=gl_Color;\n"\
+	"	n=gl_NormalMatrix*gl_Normal;\n"\
+	"	gl_Position=ftransform();\n"\
+	"	light=((gl_Vertex+vec4(0.0,0.0,1.0,1.0))*gl_ModelViewProjectionMatrix).xyz;"\
+	"}"
+	,
+	"varying vec3 n;\n"\
+	"varying vec3 light;\n"\
+	"varying vec4 color;\n"\
+	"\n"\
+	"void main()\n"\
+	"{\n"\
+	"	vec3 no=normalize(n);\n"\
+	"//	if (n.z<0.0)no=-no;\n"\
+	"	vec3 H=normalize(light);\n"\
+	"	gl_FragColor=vec4(0.4,0.4,0.4,1.0)+max(dot(no,vec3(0.0,0.0,1.0)),0.0)*vec4(0.2,0.2,0.2,1.0)+pow(max(dot(no,H),0.0),2.0)*vec4(0.2,0.2,0.2,1.0);\n"\
+	"	gl_FragColor*=color;//vec4(color.r,color.g,color.b,color.a);\n"\
+	"	gl_FragColor.a=color.a;\n"\
+	"}"
+);
 
 static Uint32 getDelay()
 {
@@ -41,7 +71,6 @@ static Uint32 getDelay()
 		_optTime=_time;
 	}
 	time_=_optTime;
-	//std::cout<<_Delay<<"\n";
 	return _Delay;
 }
 
@@ -134,12 +163,102 @@ inline static int minplusone(int a,int b)
 {
 	return (a<b)?a+1:b+1;	
 }
+
+static void draw_camera(float s)
+{
+	glDisable (GL_CULL_FACE);
+	glPushMatrix();
+	float m[16]={_R.m00,_R.m10,_R.m20, 0.0f ,_R.m01,_R.m11,_R.m21, 0.0f ,_R.m02,_R.m12,_R.m22, 0.0f ,_R.m01,_R.m11,_R.m21, 1.0f };
+    glMultMatrixf(m);
+	glBegin(GL_TRIANGLES);
+		
+		glNormal3f(0,1,0);
+		glColor3f(0,0,1);
+		glVertex3f(-s/16, 0.01, +s/16);
+		glColor3f(1,1,0);
+		glVertex3f(0   , 0.01, -s/16);
+		glColor3f(0,0,1);
+		glVertex3f(+s/16, 0.01, +s/16);
+	glEnd();
+	glBegin(GL_LINE_STRIP);
+		glColor4f(1.00f, 0.00f, 0.00f, 1.0f);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, _cameraPos.z);
+		glVertex3f(_cameraPos.x, 0.0f, _cameraPos.z);
+		glVertex3f(_cameraPos.x, _cameraPos.y, _cameraPos.z);
+	glEnd();
+    glTranslatef(_cameraPos.x,_cameraPos.y,_cameraPos.z);
+    glRotatef(57.295779513082320876798154814105f*_cameraAngle,1.0f,0.0f,0.0f);
+	const float x1=2.0f*0.0075f;
+	const float x2=2.0f*0.005f;
+	const float z1=2.0f*0.005f;
+	const float z2=2.0f*0.01f;
+	const float l=sqrt((x2-x1)*(x2-x1)+z1*z1);
+	const float nx=(x2-x1)/l;
+	const float ny=(z1)/l;
+	shader_per_pixel.use();
+	
+	glBegin(GL_QUADS);
+		glColor4f(0.25f, 0.25f, 0.25f, 1.0f);
+	  glNormal3f(+0.0f,+0.0f,+1.0f);
+	  glVertex3f(-x2,+x2,+z2);glVertex3f(-x2,-x2,+z2);
+	  glVertex3f(+x2,-x2,+z2);glVertex3f(+x2,+x2,+z2);
+	  
+	  glNormal3f(-1.0f,+0.0f,+0.0f);
+	  glVertex3f(-x2,-x2,-z2);glVertex3f(-x2,-x2,+z2);
+	  glVertex3f(-x2,+x2,+z2);glVertex3f(-x2,+x2,-z2);
+	  
+	  glNormal3f(+0.0f,+0.0f,-1.0f);
+	  glVertex3f(+x1,+x1,-z2-z1);glVertex3f(+x1,-x1,-z2-z1);
+	  glVertex3f(-x1,-x1,-z2-z1);glVertex3f(-x1,+x1,-z2-z1);
+	  
+	  glNormal3f(+1.0f,+0.0f,+0.0f);
+	  glVertex3f(+x2,-x2,+z2);glVertex3f(+x2,-x2,-z2);
+	  glVertex3f(+x2,+x2,-z2);glVertex3f(+x2,+x2,+z2);
+	  
+	  glNormal3f(+0.0f,+1.0f,+0.0f);
+	  glVertex3f(-x2,+x2,-z2);glVertex3f(-x2,+x2,+z2);
+	  glVertex3f(+x2,+x2,+z2);glVertex3f(+x2,+x2,-z2);
+	  
+	  glNormal3f(+0.0f,-1.0f,+0.0f);
+	  glVertex3f(-x2,-x2,+z2);glVertex3f(-x2,-x2,-z2);
+	  glVertex3f(+x2,-x2,-z2);glVertex3f(+x2,-x2,+z2);/**/
+	  
+	  glNormal3f(+0.0f,-nx,+ny);
+	  glVertex3f(-x2,-x2,-z2   );glVertex3f(-x1,-x1,-z2-z1);
+	  glVertex3f(+x1,-x1,-z2-z1);glVertex3f(+x2,-x2,-z2   );
+	  
+	  glNormal3f(+0.0f,+nx,-ny);
+	  glVertex3f(-x1,+x1,-z2-z1);glVertex3f(-x2,+x2,-z2   );
+	  glVertex3f(+x2,+x2,-z2   );glVertex3f(+x1,+x1,-z2-z1);
+	  
+	  glNormal3f(-nx,+0.0f,+ny);
+	  glVertex3f(+x2,-x2,-z2   );glVertex3f(+x1,-x1,-z2-z1);
+	  glVertex3f(+x1,+x1,-z2-z1);glVertex3f(+x2,+x2,-z2   );
+	  
+	  glNormal3f(+nx,+0.0f,+ny);
+	  glVertex3f(-x1,-x1,-z2-z1);glVertex3f(-x2,-x2,-z2   );
+	  glVertex3f(-x2,+x2,-z2   );glVertex3f(-x1,+x1,-z2-z1);	  
+	glEnd();
+	glFlush();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glBegin(GL_QUADS);
+		glColor4f(0.25f, 0.25f, 0.25f, 0.2f);
+		glNormal3f(0.0f,0.0f,1.0f);
+		glVertex3f(-1.0f,+1.0f,0.0f);glVertex3f(-1.0f,-2.0f,0.0f);
+		glVertex3f(+1.0f,-1.0f,0.0f);glVertex3f(+1.0f,+2.0f,0.0f);
+	glEnd();
+	glDisable(GL_BLEND);
+	glPopMatrix();
+	Shader::unuse();
+	
+}
+
 static void draw ()
 {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
 	if(!wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	SDL_Surface *screen = SDL_GetVideoSurface();
 	const int width=screen->w;
@@ -160,9 +279,6 @@ static void draw ()
   	glRotated (rotx, 1.0f, 0.0f, 0.0f);
   	glRotated (roty, 0.0f, 1.0f, 0.0f);
   	glRotated (rotz, 0.0f, 0.0f, 1.0f);
-  	//shader_per_pixel.use();
-	
-	//TriangleGraph &T=(*tg);
 	const TriangleGraph &T=level.triangleGraph();
 	switch(dist)
 	{
@@ -238,42 +354,6 @@ static void draw ()
 		
 		case 2:
 		{
-			/*std::list<int> l;
-			l.push_back(counter);
-			int di[level.size()*3];
-			for (int i=0;i<T.size()*3;i++)di[i]=-1;
-			di[counter*3+0]=0;
-			di[counter*3+1]=0;
-			di[counter*3+2]=0;
-			while(l.size()>0)
-			{
-				int tri=l.front();
-				if (di[T[tri].n0*3]<0)
-				{
-					l.push_back(T[tri].n0);
-					int acorr=2;if(same(T[tri].a,T[T[tri].n0].a,0.000001))acorr=0;else if (same(T[tri].a,T[T[tri].n0].b,0.000001))acorr=1;
-					di[T[tri].n0*3+(acorr+0)%3]=di[tri*3+0];
-					di[T[tri].n0*3+(acorr+1)%3]=di[tri*3+2];
-					di[T[tri].n0*3+(acorr+2)%3]=minplusone(di[T[tri].n0*3+(acorr+0)%3],di[T[tri].n0*3+(acorr+1)%3]);
-				}
-				if (di[T[tri].n1*3]<0)
-				{
-					l.push_back(T[tri].n1);
-					int bcorr=2;if(same(T[tri].b,T[T[tri].n1].a,0.000001))bcorr=0;else if (same(T[tri].b,T[T[tri].n1].b,0.000001))bcorr=1;
-					di[T[tri].n1*3+(bcorr+0)%3]=di[tri*3+1];
-					di[T[tri].n1*3+(bcorr+1)%3]=di[tri*3+0];
-					di[T[tri].n1*3+(bcorr+2)%3]=minplusone(di[T[tri].n1*3+(bcorr+0)%3],di[T[tri].n1*3+(bcorr+1)%3]);
-				}
-				if (di[T[tri].n2*3]<0)
-				{
-					l.push_back(T[tri].n2);
-					int ccorr=2;if(same(T[tri].c,T[T[tri].n2].a,0.000001))ccorr=0;else if (same(T[tri].c,T[T[tri].n2].b,0.000001))ccorr=1;
-					di[T[tri].n2*3+(ccorr+0)%3]=di[tri*3+2];
-					di[T[tri].n2*3+(ccorr+1)%3]=di[tri*3+1];
-					di[T[tri].n2*3+(ccorr+2)%3]=minplusone(di[T[tri].n2*3+(ccorr+0)%3],di[T[tri].n2*3+(ccorr+1)%3]);
-				}
-				l.pop_front();	
-			}*/
 			int di[level.size()];
 			{
 				
@@ -289,7 +369,6 @@ static void draw ()
 					if(di[i]>3)di[i]=3;
 				}
 			}
-			//Vector3f color;
 			glBegin(GL_TRIANGLES);
 			const float l=(T[0].a-T[0].b).length();
 			for (int i=0;i<T.size();i++)
@@ -300,10 +379,13 @@ static void draw ()
 				const Vector3f v(_R.m01,_R.m11,_R.m21);
 				const Vector3f w(_R.m02,_R.m12,_R.m22);
 				const Vector3f n=cross(T[i].b-T[i].a,T[i].c-T[i].a);
+				Matrix3x3f _RT=_R;
+				_RT.transpose();
+				Matrix3x3f _RCT=makeRotXMatrix3x3(-_cameraAngle);
 				const float r=0.2*(float)((6*6+5-d)%6);
-				const float g=((dot(v,n)<0))?1:0;
-				const float b=((dot(w,T[i].a-v-w*l)>0)&&(dot(w,T[i].b-v-w*l)>0)&&(dot(w,T[i].c-v-w*l)>0))?1:0;
-
+				const float g=(dot(v,n)<0)?1:0;
+				
+				const float b=((dot(_RCT*Vector3f(0,0,1),_RT*T[i].a-Vector3f(0,1,0)-_cameraPos)>0)&&(dot(_RCT*Vector3f(0,0,1),_RT*T[i].b-Vector3f(0,1,0)-_cameraPos)>0)&&(dot(_RCT*Vector3f(0,0,1),_RT*T[i].c-Vector3f(0,1,0)-_cameraPos)>0))?1:0;
 				glColor3f(r,g,b);
 				
 				glNormal3f(n.x,n.y,n.z);
@@ -344,7 +426,13 @@ static void draw ()
 				const float g=((dot(v,n)<0))?1:0;
 				const float b=((dot(w,T[i].a-v)>0)&&(dot(w,T[i].b-v)>0)&&(dot(w,T[i].c-v)>0))?1:0;
 				const float l=(T[0].a-T[0].b).length();
-				bool visible=!((dot((v),n)<0))&&!((dot(w,T[i].a-v-w*l)>0)&&(dot(w,T[i].b-v-w*l)>0)&&(dot(w,T[i].c-v-w*l)>0));
+				Matrix3x3f _RT=_R;
+				_RT.transpose();
+				Matrix3x3f _RCT=makeRotXMatrix3x3(-_cameraAngle);
+				bool forward=!(((dot(_RCT*Vector3f(0,0,1),_RT*T[i].a-Vector3f(0,1,0)-_cameraPos)>0)&&(dot(_RCT*Vector3f(0,0,1),_RT*T[i].b-Vector3f(0,1,0)-_cameraPos)>0)&&(dot(_RCT*Vector3f(0,0,1),_RT*T[i].c-Vector3f(0,1,0)-_cameraPos)>0)));
+				
+				bool up=!(dot(v,n)<0);
+				bool visible=up&&forward;
 				if (visible)switch(level[i].type)
 				{
 					case Tile::empty: 		gfxEngine.drawEmptyTile(level, i, d);		break; 
@@ -388,27 +476,8 @@ static void draw ()
 			glVertex3f(b.x*(0.001+height_factor), b.y*(0.001+height_factor), b.z*(0.001+height_factor));
 			glVertex3f(c.x*(0.001+height_factor), c.y*(0.001+height_factor), c.z*(0.001+height_factor));
 		glEnd();			
-	}/**/
-	
-	float m[16];
-	m[ 0]=_R.m00; m[ 4]=_R.m01; m[ 8]=_R.m02; m[12]=_R.m01;
-  	m[ 1]=_R.m10; m[ 5]=_R.m11; m[ 9]=_R.m12; m[13]=_R.m11;
-  	m[ 2]=_R.m20; m[ 6]=_R.m21; m[10]=_R.m22; m[14]=_R.m21;
-  	m[ 3]= 0.0f ; m[ 7]= 0.0f ; m[11]= 0.0f ; m[15]= 1.0f ;
-  	glMultMatrixf(m);
-	glRotatef(180,0.0f,1.0f,0.0f);
-	//glTranslatef(0.0f,1,0.0f);
-	const float l=(T[0].a-T[0].b).length();
-	glBegin(GL_TRIANGLES);
-		
-		glNormal3f(0,1,0);
-		glColor3f(0,0,1);
-		glVertex3f(-l/4, 0.01+level[counter].height-1.0f, -l/4);
-		glColor3f(1,1,0);
-		glVertex3f(0   , 0.01+level[counter].height-1.0f, +l/4);
-		glColor3f(0,0,1);
-		glVertex3f(+l/4, 0.01+level[counter].height-1.0f, -l/4);
-	glEnd();
+	}
+	draw_camera((T[0].a-T[0].b).length());
 	
 	SDL_GL_SwapBuffers();
 }
@@ -427,7 +496,7 @@ int main (int argc, char *argv[])
     bool down_pressed=false;
 	bool right_pressed=false;
 	bool left_pressed=false;
-	
+	bool numKP_pressed[10]={false,false,false,false,false,false,false,false,false,false};
 	bool mousebuttondown[2]={false,false};
 	int mx,my;
 	while (!done)
@@ -485,6 +554,16 @@ int main (int argc, char *argv[])
 					case SDLK_d:       right_pressed=false; break;
 					case SDLK_a:       left_pressed=false;  break;
 					case SDLK_q:       dist=(dist+1)%4;		break;
+					case SDLK_KP0: numKP_pressed[0]=false; break; 
+					case SDLK_KP1: numKP_pressed[1]=false; break;
+					case SDLK_KP2: numKP_pressed[2]=false; break;
+					case SDLK_KP3: numKP_pressed[3]=false; break;
+					case SDLK_KP4: numKP_pressed[4]=false; break;
+					case SDLK_KP5: numKP_pressed[5]=false; break;
+					case SDLK_KP6: numKP_pressed[6]=false; break;
+					case SDLK_KP7: numKP_pressed[7]=false; break;
+					case SDLK_KP8: numKP_pressed[8]=false; break;
+					case SDLK_KP9: numKP_pressed[9]=false; break;
 				};
                 break;
             case SDL_KEYDOWN:
@@ -500,6 +579,16 @@ int main (int argc, char *argv[])
 					case SDLK_a:       left_pressed=true;  break;
 					case SDLK_ESCAPE: done=1;              break;
 					case SDLK_l: wireframe = ! wireframe; break;
+					case SDLK_KP0: numKP_pressed[0]=true; break; 
+					case SDLK_KP1: numKP_pressed[1]=true; break;
+					case SDLK_KP2: numKP_pressed[2]=true; break;
+					case SDLK_KP3: numKP_pressed[3]=true; break;
+					case SDLK_KP4: numKP_pressed[4]=true; break;
+					case SDLK_KP5: numKP_pressed[5]=true; break;
+					case SDLK_KP6: numKP_pressed[6]=true; break;
+					case SDLK_KP7: numKP_pressed[7]=true; break;
+					case SDLK_KP8: numKP_pressed[8]=true; break;
+					case SDLK_KP9: numKP_pressed[9]=true; break;
 				};
                 break;
             case SDL_QUIT:
@@ -511,9 +600,17 @@ int main (int argc, char *argv[])
         }
         if (up_pressed   )moveForward(+0.04f/fps);
         if (down_pressed )moveForward(-0.04f/fps);
-        if (right_pressed)addRoty(+0.3333f/fps);;
-        if (left_pressed )addRoty(-0.3333f/fps);;
-        
+        if (right_pressed)addRoty(+0.3333f/fps);
+        if (left_pressed )addRoty(-0.3333f/fps);
+        if (numKP_pressed[4])_cameraPos.x+=0.01f;
+        if (numKP_pressed[6])_cameraPos.x-=0.01f;
+        if (numKP_pressed[8])_cameraPos.y+=0.01f;
+        if (numKP_pressed[2])_cameraPos.y-=0.01f;
+        if (numKP_pressed[7])_cameraPos.z+=0.01f;
+        if (numKP_pressed[9])_cameraPos.z-=0.01f;
+        if (numKP_pressed[1])_cameraAngle+=0.01f;
+        if (numKP_pressed[3])_cameraAngle-=0.01f;
+        if (numKP_pressed[5]){_cameraAngle=0.00f;_cameraPos=Vector3f();}
         
         
         draw ();
