@@ -3,9 +3,16 @@
 #include <TriangleGraph.h>
 #include <iostream>
 static const float pi=3.1415926535897932384626433832795f ;
-static const float _vElevatorMax=1.0f;
+static const float _maxJumpDuration=1.0f;
+
+static const float _hmax=2.0f;
+static const float _g=8.0f*_hmax/(_maxJumpDuration*_maxJumpDuration);
+static const float _chargeTime=0.15f;
+//static const float _vElevatorMax=100000;
+
+
 Player::Player(Genie& genie, World& world):
-	_genie(genie),/*_teta(pi/2.0),_phi(pi),_roty(0.0f),*/_h(0.0f),_v(0.0f),_vElevator(_vElevatorMax),
+	_genie(genie),/*_teta(pi/2.0),_phi(pi),_roty(0.0f),*/_h(0.0f),_v(0.0f),//_vElevator(_vElevatorMax),
 	_world(world)
 {
 	
@@ -78,32 +85,96 @@ void Player::_moveForward(float f)
 	}
 }
 
-void Player::_jump(float f, float t)
+void Player::_jump(bool jump, float t)
 {
+	const int edge=(jump==_jumpButtonState)?0:((_jumpButtonState)?-1:+1);
 	const float base=(_world.currentLevel()[_trinagle].height-1)/0.05; 
-	if (_h<=base && _vElevator==_vElevatorMax && f>0.0f)_v=0.03;
-	const float newv=(_vElevator<f)?_vElevator:f;
-	_vElevator-=newv;
-	_v+=newv*0.6-0.15*t;
-	_h+=_v*t*2.0;//-9.81f*f*f;
-	//std::cout<<"_jump:("<<f<<","<<_h<<","<<_v<<")["<<_vElevator<<"]["<<newv<<"]\n";
+	_jumpButtonState=jump;
+	//_jumpCharge
+//if (edge!=0)std::cout<<"Edge: "<<edge<<"\n";
+	if (_jumpState==0)
+	{
+		if (base+0.00001>_h && edge==+1)_jumpState=1;
+	}
+	if (_jumpState==1)
+	{
+		if (edge>=0)
+		{
+			_jumpCharge+=t;
+			const float oldJumpCharge=_jumpCharge;
+			if (_jumpCharge>_chargeTime)
+			{
+				_jumpCharge=_chargeTime;
+				_jumpState=2;	
+				//DEB_sumtime=1.0f;
+			}
+			t-=	_jumpCharge-oldJumpCharge;
+		}
+		else _jumpState=2;	
+	}
+	if (_jumpState==2)
+	{
+		//_h=base;
+		_v=sqrt(2.0f*_g*(_jumpCharge/_chargeTime)*_hmax);
+		_jumpState++;
+//std::cout<<"start Jump:"<<_v<<" "<<_v*t-0.5f*_g*t*t<<" "<< _h+_v*t-0.5f*_g*t*t	-base<<" \n";				
+	}
+	//if (_jumpState==2)
+	//{
+			
+	//}
+	_h+=_v*t-0.5f*_g*t*t;
+	//_h+=_v*t;
+	if (_v>0)DEB_sumtime+=_h-base;
+//if (_jumpState)std::cout<<"h: "<< _h<<"\n";
+	_v-=_g*t;
 	
-	if (_h<base)
+	
+	
+	//if (_h<=base && _vElevator==_vElevatorMax && f>0.0f)_v=_vMax;
+//	_v-=_g*t;
+//	const float newv=(_vElevator<f*t*(_vMax-_v))?_vElevator:f*t*(_vMax-_v);
+//	_vElevator-=newv;
+//	_v+=newv/t;
+	//_v-=_g*t;
+	//const float Emax=0.5f*(_vMax-_v)*(_vMax-_v);
+	//const float dE=(_vElevator<f*t*Emax)?_vElevator:f*t*Emax;
+	//const float dv=2.0f*sqrt(dE);
+	//_vElevator-=dE;
+	//_v+=dv;
+	//const float a=(_vElevator<f*t)?_vElevator:f*t;
+	//_vElevator-=a;
+	//_v+=(1.0)*a*_g-_g*t;
+	
+	//if (t>0.0f)
+	//_chargeTime
+	//_h+=_v*t;//-9.81f*f*f;
+	//std::cout<<"_jump:("<<_h<<","<<_v<<")["<<_vElevator<<"]["<<newv<<"]\n";
+	
+	if (_h<base )
 	{
 		_h=base;
-		_vElevator=_vElevatorMax;
+		//_vElevator=_vElevatorMax;
 		_v=0.0f;
+		if (_jumpState!=1)
+		{
+			_jumpState=0;
+			_jumpCharge=0.0f;
+		}
+		if (DEB_sumtime>0.0f)std::cout<<"_jump:["<<DEB_sumtime<<"]("<<base<<")\n";
+		DEB_sumtime=0.0f;
+		
 	}
 }
 
-void Player::tick(float time, float move, float jump, float roty, bool shoot)
+void Player::tick(float time, float move, bool jump, float roty, bool shoot)
 {
 	/*
 	float move=0.0f; if (down)move-=t*0.01f; if (up)   move+=t*0.01f;
 	float roty=0.0f; if (left)roty-=t*0.03f; if (right)roty+=t*0.03f;
 	float jump=0.0f; if (jumped)jump+=t;
 	*/
-	_jump(jump*10,time*10);
+	_jump(jump,time);
 	_addRoty(roty*0.3333f*time);	
 	_moveForward(move*0.04f*time);
 	//std::cout<<"("<<shoot<<","<<_world.attack().isAlive()<<")\n";
