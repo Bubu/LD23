@@ -4,19 +4,26 @@ Genie::Genie()
 {
 	//Matrix3x3f _rotation;
 	//Vector3f _translate;
-	_scale=1.0f;
-	_swirlHeight=1.0f;
-	_shoulderHeight=1.75f;
-	_shoulderWidth=0.3f;
-	_upperArmLength=0.3f;
-	_forearmLength=0.4f;
-	_headHeight=0.25f;
+	//_scale=0.05*1.0f;
+	_swirlHeight=0.05*1.0f;
+	_swirlRadius=0.05*0.8f;
+	_shoulderHeight=0.05*1.75f;
+	_shoulderWidth=0.05*0.3f;
+	_upperArmLength=0.05*0.3f;
+	_forearmLength=0.05*0.4f;
+	_headHeight=0.05*0.25f;
 	
 	_armAngle[0][0]=-30.0f; _armAngle[1][0]=-30.0f;
 	_armAngle[0][1]=-10.0f; _armAngle[1][1]=+10.0f;
 	_armAngle[0][2]=+20.0f; _armAngle[1][2]=-20.0f;
 	
 	_neckAngle=5.0f;
+	
+	_headRadius=0.05*0.15;
+	_shoulderRadius=0.05*0.15;
+	_handRadius=0.05*0.10;
+	_elbowRadius=0.05*0.05;
+	_bellyRadius=0.05*1.0f;
 }
 
 void Genie::getPositions(Vector3f points[10])const

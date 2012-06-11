@@ -5,7 +5,7 @@
 static const float pi=3.1415926535897932384626433832795f ;
 static const float _maxJumpDuration=1.0f;
 
-static const float _hmax=2.0f;
+static const float _hmax=2.0f*0.05;
 static const float _g=8.0f*_hmax/(_maxJumpDuration*_maxJumpDuration);
 static const float _chargeTime=0.15f;
 //static const float _vElevatorMax=100000;
@@ -75,7 +75,7 @@ void Player::_moveForward(float f)
 		if (triangleGraph[i].isInside(p))t_trinagle=i;
 	}
 	
-	float diff=1.0f+(_h)*0.05-_world.currentLevel()[t_trinagle].height;
+	float diff=1.0f+(_h)-_world.currentLevel()[t_trinagle].height;
 	const bool blocking=diff<0.000||_world.currentLevel()[t_trinagle].type==Tile::water;
 	if (t_trinagle>=0 &&  !blocking)
 	{
@@ -88,7 +88,7 @@ void Player::_moveForward(float f)
 void Player::_jump(bool jump, float t)
 {
 	const int edge=(jump==_jumpButtonState)?0:((_jumpButtonState)?-1:+1);
-	const float base=(_world.currentLevel()[_trinagle].height-1)/0.05; 
+	const float base=(_world.currentLevel()[_trinagle].height-1); 
 	_jumpButtonState=jump;
 	//_jumpCharge
 //if (edge!=0)std::cout<<"Edge: "<<edge<<"\n";
@@ -193,7 +193,7 @@ void Player::tick(float time, float move, bool jump, float roty, bool shoot)
 	const float d_camh=(0.2-1.0f+_world.currentLevel()[_trinagle].height-_camh)/30.0f;
 	_camh+=d_camh;
 	DEB_currenttrace=(DEB_currenttrace+1)%1000;
-	DEB_trace[DEB_currenttrace]=Vector3f(_R.m01,_R.m11,_R.m21)*(1+_h*0.05);
+	DEB_trace[DEB_currenttrace]=Vector3f(_R.m01,_R.m11,_R.m21)*(1+_h);
 }
 
 void Player::setTriangle(int i)

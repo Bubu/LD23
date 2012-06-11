@@ -419,9 +419,9 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 		float m[16];
 		player.getTransformation(m);
 		float h=player.h();
-		m[0]*=s;m[1]*=s;m[2]*=s; 
+		/*m[0]*=s;m[1]*=s;m[2]*=s; 
 		m[4]*=s;m[5]*=s;m[6]*=s;
-		m[8]*=s;m[9]*=s;m[10]*=s;
+		m[8]*=s;m[9]*=s;m[10]*=s;*/
 		glMultMatrixf(m);
 		glRotatef(180,0.0f,1.0f,0.0f);
 		glTranslatef(0.0f,h,0.0f);
@@ -443,6 +443,7 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 			glVertex3f(points[7].x,points[7].y,points[7].z); glVertex3f(points[8].x,points[8].y,points[8].z);
 			glVertex3f(points[9].x,points[9].y,points[9].z); glVertex3f(points[8].x,points[8].y,points[8].z);		
 		glEnd();*/
+		
 		glFlush();
 		glColor4f(0,0,1,0.1);
 		glEnable(GL_BLEND);
@@ -453,19 +454,24 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 		srand(seed);
 		glBegin(GL_TRIANGLE_STRIP);
 		float a=0.0f;
-		for(int j=0;j<5;j++)
+		const int jmax=10;
+		const float jmaxf=(float)jmax;
+		const int imax=1000;
+		const float imaxf=(float)imax;
+		for(int j=0;j<jmax;j++)
 		{
 			a=0.0f;
 			glColor4f(0,0.2*(float)j,1,0.2);
-			const float f=0.1+0.09*(float)j;
-			for (int i=0;i<500;i++)
+			const float f=genie.swirlRadius()*((float)(j+1))/jmaxf;
+			
+			for (int i=0;i<imax;i++)
 			{
-				const float h=0.002f*(float)(i);
+				const float h=((float)(i))/imaxf;
 				const float da=0.0001f*(float)(rand()%1000);
 				const float r=f*h*(0.3+(0.0002f*(float)(rand()%1000)));
 				const float dh=0.2-0.001*0.1*(float)(rand()%1000);
 				a+=da;
-				glVertex3f(cos(a)*r,(h+dh)*(h+dh),sin(a)*r);		
+				glVertex3f(cos(a)*r,genie.swirlHeight()*(h+dh)*(h+dh),sin(a)*r);		
 			}
 		}
 		glEnd();
@@ -474,66 +480,59 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 		srand(seed);
 		glBegin(GL_TRIANGLE_STRIP);
 		a=0.0f;
-		for(int j=0;j<10;j++)
+		for(int j=0;j<jmax;j++)
 		{
 			a=0.0f;
 			glColor4f(0,0.1*(float)j,1,0.2);
-			const float f=0.1+0.09*(float)j;
-			for (int i=0;i<1000;i++)
+			const float f=genie.swirlRadius()*((float)(j+1))/jmaxf;
+			for (int i=0;i<imax;i++)
 			{
-				const float h=0.001f*(float)(i);
+				const float h=((float)(i))/imaxf;
 				const float da=0.0001f*(float)(rand()%1000);
 				const float r=f*h*(0.3+(0.0002f*(float)(rand()%1000)));
 				const float dh=0.2-0.001*0.1*(float)(rand()%1000);
 				a+=da;
-				glVertex3f(cos(a)*r,(h+dh)*(h+dh),sin(a)*r);		
+				glVertex3f(cos(a)*r,genie.swirlHeight()*(h+dh)*(h+dh),sin(a)*r);	
 			}
 		}
-		glEnd();/**/
-		/**/
-		/*for (int i=0;i<10000;i++)
-		{
-			const float h=0.0001f*(float)(i);
-			const float da=0.0001f*(float)(rand()%1000);
-			const float r=h*(0.3+(0.0002f*(float)(rand()%1000)));
-			const float dh=0.1-0.001*0.05*(float)(rand()%1000);
-			a+=da;
-			glVertex3f(cos(a)*r,(h+dh)*(h+dh),sin(a)*r);		
-		}*/
+		glEnd();
 		glDisable(GL_BLEND);
 		glDisable(GL_CULL_FACE);
 		const float pi=3.1415926535897932384626433832795f;
 		const float da=(2*pi)/10.0f;
 		glBegin(GL_QUADS);
-		for (int i=0;i<10;i++)
+		const int kmax=10;
+		const float kmaxf=(float)kmax;
+		for (int i=0;i<kmax;i++)
 		{
-			const float y1=0.1*(float)(i);
-			const float y2=0.1*(float)(i+1);
+			const float y1=((float)(i))/kmaxf;
+			const float y2=((float)(i+1))/kmaxf;
 			const float x1=sqrt(sqrt(1.0f-y1))*0.3f;
 			const float x2=sqrt(sqrt(1.0f-y2))*0.3f;
 			//std::cout<<"x1:"<<x1<<"\n";
-			const float y=points[1].y+0.2f;
+			const float y=points[1].y+genie.headHeight()*0.8;
 			const float f=(points[1].y-points[0].y)*0.8;
 			for (float a=0;a<pi*2.0;a+=da)
 			{
+				const float r=genie.bellyRadius();
 				const float s1=sin(x1); const float c1=cos(x1); 
 				const float s2=sin(x2); const float c2=cos(x2);
 				glNormal3f(sin(a   ),0,cos(a   ));
-				glVertex3f(x1*sin(a   ),y1*f+y,x1*cos(a   ));
-				glVertex3f(x2*sin(a   ),y2*f+y,x2*cos(a   ));
+				glVertex3f(r*x1*sin(a   ),y1*f+y,r*x1*cos(a   ));
+				glVertex3f(r*x2*sin(a   ),y2*f+y,r*x2*cos(a   ));
 				glNormal3f(sin(a+da),0,cos(a+da));
-				glVertex3f(x2*sin(a+da),y2*f+y,x2*cos(a+da));
-				glVertex3f(x1*sin(a+da),y1*f+y,x1*cos(a+da));
+				glVertex3f(r*x2*sin(a+da),y2*f+y,r*x2*cos(a+da));
+				glVertex3f(r*x1*sin(a+da),y1*f+y,r*x1*cos(a+da));
 			}
 		}
 		glEnd();
-		drawSphere(points[3], 0.15);
-		drawSphere(points[7], 0.15);
-		drawSphere(points[4], 0.15);
-		drawSphere(points[9], 0.10);
-		drawSphere(points[8], 0.05);
-		drawSphere(points[5], 0.05);
-		drawSphere(points[6], 0.10);
+		drawSphere(points[3], genie.headRadius());//Head
+		drawSphere(points[7], genie.shoulderRadius());//Shoulder
+		drawSphere(points[4], genie.shoulderRadius());//Shoulder
+		drawSphere(points[9], genie.handRadius());//Hand
+		drawSphere(points[8], genie.elbowRadius());//Elbow
+		drawSphere(points[5], genie.elbowRadius());//Elbow
+		drawSphere(points[6], genie.handRadius());;//Hand
 		Shader::unuse();
 		glBegin(GL_LINES);
 			glVertex3f(points[7].x,points[7].y,points[7].z); glVertex3f(points[8].x,points[8].y,points[8].z);
@@ -544,7 +543,7 @@ void GFXEngine::drawGenie(const Genie& genie, const Player& player)
 		
 		glCullFace(GL_BACK);
 		glDisable(GL_BLEND);
-		glDisable(GL_CULL_FACE);
+		glDisable(GL_CULL_FACE);/**/
 	glPopMatrix();
 }
 
